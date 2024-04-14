@@ -1,7 +1,7 @@
 package edu.upenn.cit594.logging;
 
 public class Logger {
-private static Logger instance;
+	private static Logger instance;
 	private PrintStream output;
 
 	private Logger() {
