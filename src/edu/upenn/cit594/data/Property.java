@@ -1,6 +1,6 @@
 package edu.upenn.cit594.data;
 
-public class Properties {
+public class Property {
 	
 		   	
 		//create three fields as per directions
@@ -8,7 +8,7 @@ public class Properties {
 			private double total_livable_area;
 			private int zip_code;
 
-		    public Properties(double market_value, double total_livable_area, int zip_code){
+		    public Property(double market_value, double total_livable_area, int zip_code){
 		        this.market_value = market_value;
 		        this.total_livable_area= total_livable_area;
 		        this.zip_code = zip_code;
