@@ -15,12 +15,16 @@ public abstract class FileSuperLogger {
 	        this.filename = filename;
 	        this.logger = logger;
 	    }
-	
+	    
+	    /**
+	     * Calling the changeOutPutDest method from Logger class
+	     * @param openLogger
+	     */
 	    protected void openLogger() {
 	        if (logger == null) {
 	            return;
 	        }
-	        logger.openLogger(filename);
+	        logger.changeOutputDest(filename);
 	    }
 
 	}
