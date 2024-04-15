@@ -2,6 +2,8 @@ package edu.upenn.cit594.ui;
 
 import java.util.Scanner;
 
+import edu.upenn.cit594.processor.TotPopulation;
+
 
 public class UserInterface {
 	private Scanner scanner;
@@ -30,6 +32,35 @@ public class UserInterface {
 			return readInput();
 	}
 	
+	/** 
+	 * method to prompt user for a valid 5 digit Zip code
+	 * @return
+	 */
+	public int request5DigitZip() {
+		while (true) {
+			System.out.print("Please enter a 5-digit Zip Code.");
+			System.out.print("> ");
+			System.out.flush(); 
+			
+			if (scanner.hasNextInt()) {
+				int zipCode = scanner.nextInt();
+				// casting to string to check that the zip has 5 digits
+				if (String.valueOf(zipCode).length() == 5) {
+					return zipCode;
+				} else {
+					System.out.print("Invalid Zip Code. Please enter a 5-digit Zip Code.");
+					System.out.print("> ");
+					scanner.nextLine();
+				}
+			}
+			else {
+				System.out.print("Invalid Zip Code. Please enter a 5-digit Zip Code.");
+				System.out.print("> ");
+				scanner.nextLine();
+			}
+		}
+	}
+	
 	
 	public void displayMenu() {
 		System.out.println("Which action would you like to perform?");
@@ -42,5 +73,11 @@ public class UserInterface {
 				+ "6. Show the total market value of properties, per capita, for a specified ZIP Code.\n"
 				+ "7. Show the results of your custom feature.");
 		
+	}
+	
+	public int displayTotPop(String populationFile) {
+		int totPop = TotPopulation.totalPopCalculator(populationFile);
+		
+		return totPop;
 	}
 }
