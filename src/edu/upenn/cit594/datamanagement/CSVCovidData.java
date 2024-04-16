@@ -15,7 +15,7 @@ import edu.upenn.cit594.data.Covid19Data;
 public class CSVCovidData {
 	
 	// creating a covid map with the zip code and covid data 
-	private Map <Integer, Covid19Data> covidMap;
+	private Map <Date, Covid19Data> covidMap;
 	
 	public CSVCovidData() {
 		this.covidMap = new HashMap<>();
@@ -23,7 +23,7 @@ public class CSVCovidData {
 
 	public void csvCovidReader(String csvFile) throws FileNotFoundException, IOException, ParseException {
 		String line;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))){
 			while ((line = reader.readLine()) != null) {
@@ -42,15 +42,15 @@ public class CSVCovidData {
 				
 				Covid19Data covidData = new Covid19Data(zipCode,timeStamp, partialVax, fullVax, negResults, posResults, testsConducted,deaths, hospitalizations,boosters );
 				// add to map
-				covidMap.put(zipCode, covidData);
+				covidMap.put(timeStamp, covidData);
 			}
 		}
 	}
 
-	public int getVaccinationNumber(int zipCode, String vaxType) {
+	public int getVaccinationNumber(String vaxType, Date date) {
 		
 		// getting the data for zip code
-		Covid19Data covidData = covidMap.get(zipCode);
+		Covid19Data covidData = covidMap.get(date);
 		
 		// if the covidData does not exist for the zip code, return 0
 		if (covidData == null) {
