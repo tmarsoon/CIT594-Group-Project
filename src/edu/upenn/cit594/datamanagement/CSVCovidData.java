@@ -7,10 +7,19 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.upenn.cit594.data.Covid19Data;
 
 public class CSVCovidData {
+	
+	// creating a covid map with the zip code and covid data 
+	private Map <Integer, Covid19Data> covidMap;
+	
+	public CSVCovidData() {
+		this.covidMap = new HashMap<>();
+	}
 
 	public void csvCovidReader(String csvFile) throws FileNotFoundException, IOException, ParseException {
 		String line;
@@ -32,8 +41,38 @@ public class CSVCovidData {
 				Date timeStamp = dateFormat.parse(data[8]);
 				
 				Covid19Data covidData = new Covid19Data(zipCode,timeStamp, partialVax, fullVax, negResults, posResults, testsConducted,deaths, hospitalizations,boosters );
+				// add to map
+				covidMap.put(zipCode, covidData);
 			}
 		}
 	}
-}
 
+	public int getVaccinationNumber(int zipCode, String vaxType) {
+		
+		// getting the data for zip code
+		Covid19Data covidData = covidMap.get(zipCode);
+		
+		// if the covidData does not exist for the zip code, return 0
+		if (covidData == null) {
+			return 0;
+		}
+		
+		int vaccinationNumber = 0;
+		
+		if (vaxType.equalsIgnoreCase("full")) {
+			// get the full vax info for the specified zip code
+			vaccinationNumber = covidData.getFullyVaccinated();
+		}
+		
+		else if (vaxType.equalsIgnoreCase("partial")){
+			// get the partial vax info for the specified zip code
+			vaccinationNumber = covidData.getPartiallyVaccinated();
+		}
+		
+		else {
+			System.out.println("The vaccination type specified does not exist: " + vaxType);
+		}
+		
+		return vaccinationNumber;
+	}
+}
