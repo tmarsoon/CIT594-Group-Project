@@ -2,7 +2,7 @@ package edu.upenn.cit594.ui;
 
 import java.util.Scanner;
 
-import edu.upenn.cit594.processor.TotPopulation;
+import edu.upenn.cit594.processor.TotPopulationProcessor;
 
 
 public class UserInterface {
@@ -76,8 +76,8 @@ public class UserInterface {
 	}
 	
 	public int displayTotPop(String populationFile) {
-		int totPop = TotPopulation.totalPopCalculator(populationFile);
-		
+		int totPop = TotPopulationProcessor.totalPopCalculator(populationFile);
+	
 		return totPop;
 	}
 }
