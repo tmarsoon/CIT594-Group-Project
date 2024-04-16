@@ -5,9 +5,9 @@ import java.util.List;
 
 import edu.upenn.cit594.datamanagement.PopulationReader;
 
-public class TotPopulation {
+public class TotPopulationProcessor {
 
-	public static int totalPopCalculator(String populationFile ) {
+	public int totalPopCalculator(String populationFile ) {
 		
 		int totPop = 0;
 		
