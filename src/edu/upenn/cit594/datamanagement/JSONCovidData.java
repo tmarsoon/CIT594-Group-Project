@@ -1,9 +1,6 @@
 package edu.upenn.cit594.datamanagement;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.ParseException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +9,8 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 
 
 import edu.upenn.cit594.data.Covid19Data;
@@ -27,13 +26,15 @@ import edu.upenn.cit594.logging.Logger;
 	        super(filename, logger);
 	        this.covidMap = new HashMap<>();
 	    }
-
-	    public void jsonCovidReader(String jsonFile) throws FileNotFoundException, IOException, ParseException {
-	        JSONParser parser = new JSONParser();
+	    //org.json.simple.parser.ParseException and java.text.ParseException causes a naming conflict
+	    //both must be used to throw for the jsonArray parser and the dateFormat variable
+	    //here we throw the import statement directly to bypass this conflict
+	    public void jsonCovidReader(String jsonFile) throws FileNotFoundException, IOException, ParseException, java.text.ParseException {
+	        JSONParser dataParser = new JSONParser();
 
 	        try (FileReader fileReader = new FileReader(jsonFile)) {
-	            JSONArray jsonArray = (JSONArray) parser.parse(fileReader);
-
+	            JSONArray jsonArray = (JSONArray) dataParser.parse(fileReader);
+	            
 	            for (Object obj : jsonArray) {
 	                JSONObject jsonObj = (JSONObject) obj;
 
@@ -45,14 +46,15 @@ import edu.upenn.cit594.logging.Logger;
 	                int hospitalizations = Integer.parseInt(jsonObj.get("hospitalized").toString());
 	                int partialVax = Integer.parseInt(jsonObj.get("partially_vaccinated").toString());
 	                int fullVax = Integer.parseInt(jsonObj.get("fully_vaccinated").toString());
+	                int boosters = Integer.parseInt(jsonObj.get("boosted").toString());
 	               //im not seeing a boosted section in the json file
 
-	                Date timeStamp = dateFormat.parse(jsonObj.get("timestamp").toString());
+	                Date timeStamp = dateFormat.parse(jsonObj.get("etl_timestamp").toString());
 	                String date = dateFormat.format(timeStamp);
 
-	                jsonCovid19Data covidData = new Covid19Data(zipCode, timeStamp, partialVax, fullVax, negResults,
-	                        posResults, testsConducted, deaths, hospitalizations);
-	                covidMap.put(date, covidData);
+	                Covid19Data jsonCovidData = new Covid19Data(zipCode, timeStamp, partialVax, fullVax, negResults,
+	                        posResults, testsConducted, deaths, hospitalizations, boosters);
+	                covidMap.put(date, jsonCovidData);
 	            }
 	         // Logging the covid
 	            logger.logEvent(filename);
@@ -64,46 +66,41 @@ import edu.upenn.cit594.logging.Logger;
 	            // Log IO error
 	            logger.logEvent("Error:  Reading covid data file - " + filename);
 	            e.printStackTrace();
-	        } catch (ParseException | NumberFormatException e) {
+	        } catch (NumberFormatException e) {
 	            // Log parsing errors
 	            logger.logEvent("Error: Parsing covid data file - " + filename);
 	            e.printStackTrace();
 	        }
 	    }
 
-	    public int getVaccinationNumber(String vaxType, String date) throws ParseException {
-	        try {
-	        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	            //setting a lenient parser to false since when parsing dates, the parser can be lenient
-	            //setting object to false so the parser strictly follows the format
-	            dateFormat.setLenient(false);
-	            //parsing string to the object, Date
-	            Date dateAsDate = dateFormat.parse(date);
-	            //formatting the date back to a string
-	            String dateStr = dateFormat.format(dateAsDate);
-	         
-	            //creating covid19data object
-	            Covid19Data covidData = covidMap.get(dateStr);
-	            //if the date is out of range, there will be no data
+	    public int getVaccinationNumber(String vaxType, String date) throws ParseException, java.text.ParseException {
+	        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			//setting a lenient parser to false since when parsing dates, the parser can be lenient
+			//setting object to false so the parser strictly follows the format
+			dateFormat.setLenient(false);
+			//parsing string to the object, Date
+			Date dateAsDate = dateFormat.parse(date);
+			//formatting the date back to a string
+			String dateStr = dateFormat.format(dateAsDate);
+       
+			//creating covid19data object
+			Covid19Data covidData = covidMap.get(dateStr);
+			//if the date is out of range, there will be no data
 
-	            if (covidData == null) {
-	                System.out.println("No covid data available: " + dateStr);
-	                return 0;
-	            }
+			if (covidData == null) {
+			    System.out.println("No covid data available: " + dateStr);
+			    return 0;
+			}
 
-	            switch (vaxType.toLowerCase()) {
-	                case "full":
-	                    return covidData.getFullyVaccinated();
-	                case "partial":
-	                    return covidData.getPartiallyVaccinated();
-	                default:
-	                    System.out.println("The vaccine does not exist: " + vaxType);
-	                    return 0;
-	            }
-	        } catch (ParseException e) {
-	            System.out.println("Invalid date format provided: " + date);
-	            return 0;
-	        }
+			switch (vaxType.toLowerCase()) {
+			    case "full":
+			        return covidData.getFullyVaccinated();
+			    case "partial":
+			        return covidData.getPartiallyVaccinated();
+			    default:
+			        System.out.println("The vaccine does not exist: " + vaxType);
+			        return 0;
+			}
 	    }
 	}
 
