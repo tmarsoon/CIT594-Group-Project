@@ -55,15 +55,15 @@ public class CSVCovidData extends FileSuperLogger{
 	            logger.logEvent(filename);
 	        } catch (FileNotFoundException e) {
 	            // Log file not found error
-	            logger.logEvent("Error: COVID data file not found: " + filename);
+	            logger.logEvent("Error: Covid data isn't found - " + filename);
 	            e.printStackTrace();
 	        } catch (IOException e) {
 	            // Log IO error
-	            logger.logEvent("Error reading COVID data file: " + filename);
+	            logger.logEvent("Error:  Reading covid data file - " + filename);
 	            e.printStackTrace();
 	        } catch (ParseException | NumberFormatException e) {
 	            // Log parsing errors
-	            logger.logEvent("Error parsing COVID data file: " + filename);
+	            logger.logEvent("Error: Parsing covid data file - " + filename);
 	            e.printStackTrace();
 	        }
 	    }
