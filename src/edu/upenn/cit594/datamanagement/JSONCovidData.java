@@ -72,8 +72,9 @@ import edu.upenn.cit594.logging.Logger;
 	            e.printStackTrace();
 	        }
 	    }
-
-	    public int getVaccinationNumber(String vaxType, String date) throws ParseException, java.text.ParseException {
+	  
+	    //here we throw the import statement directly to bypass this parseexception naming conflict
+	    public int getVaccinationNumber(String vaxType, String date) throws java.text.ParseException {
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			//setting a lenient parser to false since when parsing dates, the parser can be lenient
 			//setting object to false so the parser strictly follows the format
