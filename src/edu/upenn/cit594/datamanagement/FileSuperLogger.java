@@ -14,7 +14,7 @@ public abstract class FileSuperLogger {
 	    public FileSuperLogger(String filename, Logger logger) {
 	        this.filename = filename;
 	        this.logger = logger;
-	    }
+	    } 
 	    
 	    /**
 	     * Calling the changeOutPutDest method from Logger class

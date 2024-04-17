@@ -56,7 +56,7 @@ import edu.upenn.cit594.logging.Logger;
 	                        posResults, testsConducted, deaths, hospitalizations, boosters);
 	                covidMap.put(date, jsonCovidData);
 	            }
-	         // Logging the covid
+	         // Logging the covid event
 	            logger.logEvent(filename);
 	        } catch (FileNotFoundException e) {
 	            // Log file not found error

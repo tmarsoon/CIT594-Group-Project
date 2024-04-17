@@ -82,37 +82,4 @@ public class Covid19Data {
 	    	return boostersGiven;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

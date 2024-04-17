@@ -25,7 +25,7 @@ public class CSVCovidData extends FileSuperLogger{
 	        this.covidMap = new HashMap<>();
 	    }
 
-	public void csvCovidReader(String csvFile) throws FileNotFoundException, IOException, ParseException {
+	public void csvCovidReader(String csvFile) throws FileNotFoundException, IOException, ParseException, NumberFormatException {
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))){
 			String line;
