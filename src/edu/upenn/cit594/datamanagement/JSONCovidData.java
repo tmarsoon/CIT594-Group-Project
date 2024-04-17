@@ -66,7 +66,7 @@ import edu.upenn.cit594.logging.Logger;
 	            // Log IO error
 	            logger.logEvent("Error:  Reading covid data file - " + filename);
 	            e.printStackTrace();
-	        } catch (NumberFormatException e) {
+	        } catch (ParseException | NumberFormatException e) {
 	            // Log parsing errors
 	            logger.logEvent("Error: Parsing covid data file - " + filename);
 	            e.printStackTrace();
