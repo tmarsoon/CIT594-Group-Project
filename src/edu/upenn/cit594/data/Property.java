@@ -8,10 +8,10 @@ public class Property {
 			private double total_livable_area;
 			private int zip_code;
 
-		    public Property(double market_value, double total_livable_area, int zip_code){
+		    public Property(double market_value, double total_livable_area, int zipCode){
 		        this.market_value = market_value;
 		        this.total_livable_area= total_livable_area;
-		        this.zip_code = zip_code;
+		        this.zip_code = zipCode;
 		    }
 
 		    //creating getters and setters for control and encapsulation 	
