@@ -40,7 +40,7 @@ public class PopulationReader extends FileSuperLogger {
             // Log IO error
             logger.logEvent("Error:  Reading covid data file - " + filename);
             e.printStackTrace();
-        } catch (ParseException, NumberFormatException e) {
+        } catch (ParseException | NumberFormatException e) {
             // Log parsing errors
             logger.logEvent("Error: Parsing covid data file - " + filename);
             e.printStackTrace();
