@@ -17,6 +17,7 @@ public class PopulationReader extends FileSuperLogger {
         this.populationMap = new HashMap<>();
     }
 
+    //parse exception issue here
     public void readPopulationData(String csvFile) throws FileNotFoundException, IOException, ParseException, NumberFormatException {
        
         try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
@@ -39,7 +40,7 @@ public class PopulationReader extends FileSuperLogger {
             // Log IO error
             logger.logEvent("Error:  Reading covid data file - " + filename);
             e.printStackTrace();
-        } catch (ParseException | NumberFormatException e) {
+        } catch (ParseException, NumberFormatException e) {
             // Log parsing errors
             logger.logEvent("Error: Parsing covid data file - " + filename);
             e.printStackTrace();

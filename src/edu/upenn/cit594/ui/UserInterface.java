@@ -2,12 +2,13 @@ package edu.upenn.cit594.ui;
 
 import java.util.Scanner;
 
+import edu.upenn.cit594.processor.Processor;
 import edu.upenn.cit594.processor.TotPopulationProcessor;
 
 
 public class UserInterface {
 	private Scanner scanner;
-	
+	 protected Processor processor;
 	public UserInterface() {
 		this.scanner = new Scanner(System.in);
 	}
@@ -75,9 +76,48 @@ public class UserInterface {
 		
 	}
 	
-	public int displayTotPop(String populationFile) {
-		int totPop = TotPopulationProcessor.totalPopCalculator(populationFile);
-	
-		return totPop;
+	 public void executeAction(int action) {
+	        switch (action) {
+	            case 0:
+	                System.out.println("Exiting the program.");
+	                System.exit(0);
+	                break;
+	            case 1:
+	                displayMenu();
+	                break;
+	            case 2:
+	                int totalPopulation = populationProcessor.totalPopCalculator("population.csv");
+	                System.out.println("Total Population: " + totalPopulation);
+	                break;
+	            case 3:
+	                int zipCode = request5DigitZip();
+	                // Assume you have a method in VaccinationProcessor to get total vaccinations per capita
+	                int vaccinationsPerCapita = vaccinationProcessor.getTotalVaccinationsPerCapita(zipCode);
+	                System.out.println("Total Vaccinations Per Capita for ZIP Code " + zipCode + ": " + vaccinationsPerCapita);
+	                break;
+	            case 4: //finished
+	            	  int specifiedZipCode4 = request5DigitZip();
+	                  int averageMarketValue = processor.getAverageMarketValue(specifiedZipCode4);
+	                  System.out.println("Average Market Value for ZIP Code " + specifiedZipCode4 + ": " + averageMarketValue);
+	                  break;
+	            case 5: //finished
+	            	 int specifiedZipCode5 = request5DigitZip();
+	                 int averageLivableArea = processor.getAverageLivableArea(specifiedZipCode5);
+	                 System.out.println("Average Total Livable Area for ZIP Code " + specifiedZipCode5 + ": " + averageLivableArea);
+	                 break;	        
+	            case 6: //finished
+	            	 int specifiedZipCode6 = request5DigitZip();
+	                 int totalMarketValuePerCapita = processor.getTotalMarketValuePerCapita(specifiedZipCode6);
+	                 System.out.println("Total Market Value of Properties Per Capita for ZIP Code " + specifiedZipCode6 + ": " + totalMarketValuePerCapita);
+	                 break;
+	            case 7:
+	                // Implement case 7: Show the results of your custom feature
+	                break;
+	            default:
+	                System.out.println("Invalid option. Please enter a number between 0 and 7.");
+	                break;
+	        }
+	    }
 	}
-}
+	
+

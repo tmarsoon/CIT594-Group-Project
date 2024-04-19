@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+
 
 import edu.upenn.cit594.data.Property;
 import edu.upenn.cit594.data.ZipCode;
@@ -78,86 +78,97 @@ public class Processor {
 	        
 
 	    }
-
+//question 4 - 3.4, finished
 //memorization for average market value
 private HashMap<Integer, Integer> memValue = new HashMap<>(); 
-public int getAverageMarketValue (int zipCode) {
-    if (memValue.containsKey(zipCode)){
+public int getAverageMarketValue(int zipCode) {
+    if (memValue.containsKey(zipCode)) {
         return memValue.get(zipCode);
-    }else {
-        double sumMarketValue = 0;
-        int averageMarketValue = 0;
-        if (populationReader.containsKey(zipCode)) {
-            ZipCode code = populationMap.get(zipCode);
-            for (Property property : code.getProperties()) {
-                sumMarketValue += property.getMarketValue();
-            }
-            GetAverage average = new GetAverage(); // Implement Strategy
-            averageMarketValue = average.getAverage(sumMarketValue, code.getProperties().size());
-
-        } else {
-            System.out.println("No data available or invalid ZipCode");
-        }
-        memValue.put(zipCode, averageMarketValue);
-        return averageMarketValue;
-    }
-}
-
-/**
- * Q4
- * Calculates the average total liveable area of homes in a given zipcode
- * @param zipCode
- * @return average liveable area
- */
-private HashMap<Integer, Integer> memArea = new HashMap<>(); //Memoization
-public int getAverageLivableArea(int zipCode) {
-    if (memArea.containsKey(zipCode)){
-        return memArea.get(zipCode);
-    }else {
-        double sumLivableArea = 0;
-        int averageLivableArea = 0;
+    } else {
         if (populationMap.containsKey(zipCode)) {
             ZipCode code = populationMap.get(zipCode);
-            for (Property property : code.getProperties()) {
-                sumLivableArea += property.getLivableArea();
+            int numProperties = code.getProperties().size();
+            if (numProperties == 0) {
+                // If there are no properties in the ZIP code, return 0
+                return 0;
             }
-            GetAverage average = new GetAverage(); // Implement Strategy
-            averageLivableArea = average.getAverage(sumLivableArea, code.getProperties().size());
+            double sumMarketValue = 0;
+            for (Property property : code.getProperties()) {
+                sumMarketValue += property.getMarket_Value();
+            }
+            // Calculate average market value truncated to an integer
+            //average market value gets truncated to an integer
+            int averageMarketValue = (int) (sumMarketValue / numProperties);
+            memValue.put(zipCode, averageMarketValue);
+            return averageMarketValue;
         } else {
             System.out.println("No data available or invalid ZipCode");
+            return 0;
         }
-        memArea.put(zipCode, averageLivableArea);
-        return averageLivableArea;
     }
 }
 
-/**
- * Q5
- * Calculates the total residential market value per capita in a given zipcode
- * @param zipCode
- * @return total RMV per capita
- */
+//Enters 5- 3.5, finished
+private HashMap<Integer, Integer> memArea = new HashMap<>(); //Memoization
+public int getAverageLivableArea(int zipCode) {
+	 if (memArea.containsKey(zipCode)) {
+	        return memArea.get(zipCode);
+	    } else {
+	        double sumLivableArea = 0;
+	        int averageLivableArea = 0;
+	        if (populationMap.containsKey(zipCode)) {
+	            ZipCode code = populationMap.get(zipCode);
+	            int numberOfProperties = code.getProperties().size();
+	            if (numberOfProperties == 0) {
+	                System.out.println("No properties available for the specified ZIP Code.");
+	                return 0;
+	            }
+	            for (Property property : code.getProperties()) {
+	                sumLivableArea += property.getTotal_Livable_Area();
+	            }
+	            //trucating the the average total livable are as an integer
+	            averageLivableArea = (int) (sumLivableArea / numberOfProperties);
+	        } else {
+	            System.out.println("Invalid or unavailable ZIP Code.");
+	            return 0;
+	        }
+	        memArea.put(zipCode, averageLivableArea);
+	        return averageLivableArea;
+	    }
+	}
+
+//Enters 6 - 3.6 finished
 private HashMap<Integer, Integer> memValuePC = new HashMap<>(); //Memoization
-public int getTotalValuePC(int zipCode){
-    if (memValuePC.containsKey(zipCode)){
-        return memValuePC.get(zipCode);
-    }else {
-        double sumMarketValue = 0;
-        int marketValuePC = 0;
-        if (!populationReader.containsKey(zipCode)) {
-            return 0;
-        }
-        ZipCode code = populationMap.get(zipCode);
-        for (Property property : code.getProperties()) {
-            sumMarketValue += property.getMarketValue();
-        }
-        if (sumMarketValue == 0 || code.getPopulation() == 0) {
-            return 0;
-        }
-        marketValuePC = (int) (sumMarketValue / code.getPopulation());
-        memValuePC.put(zipCode, marketValuePC);
-        return marketValuePC;
-    }
+public int getTotalMarketValuePerCapita(int zipCode){
+	  if (memValuePC.containsKey(zipCode)) {
+	        return memValuePC.get(zipCode);
+	    } else {
+	        if (!populationMap.containsKey(zipCode)
+	        		) {
+	            System.out.println("Invalid or unavailable ZIP Code.");
+	            return 0;
+	        }
+
+	        ZipCode code = populationMap.get(zipCode);
+	        int population = code.getPopulation();
+	        if (population == 0) {
+	            System.out.println("Population of ZIP Code is 0.");
+	            return 0;
+	        }
+
+	        double sumMarketValue = 0;
+	        for (Property property : code.getProperties()) {
+	            sumMarketValue += property.getMarket_Value();
+	        }
+
+	        if (sumMarketValue == 0) {
+	            System.out.println("Total market value of properties in ZIP Code is 0.");
+	            return 0;
+	        }
+
+	        int marketValuePerCapita = (int) (sumMarketValue / population);
+	        memValuePC.put(zipCode, marketValuePerCapita);
+	        return marketValuePerCapita;
+	    }
+	}
 }
-
-

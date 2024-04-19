@@ -67,7 +67,8 @@ public class Main {
 		        
 		        // Create Processor object and initialize data
 		        System.out.println("Please wait while we process the data...");
-		        Processor processor = new Processor(, propertiesReader, populationReader);
+		        Processor processor = new Processor(
+		        		, propertiesReader, populationReader);
 
 		        //instantiating new object with interfacedesign data type
 		        UserInterface ui = new UserInterface(processor, logger);
