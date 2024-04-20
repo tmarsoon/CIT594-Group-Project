@@ -111,7 +111,7 @@ public class UserInterface {
 	                 System.out.println("Total Market Value of Properties Per Capita for ZIP Code " + specifiedZipCode6 + ": " + totalMarketValuePerCapita);
 	                 break;
 	            case 7:
-	                // Implement case 7: Show the results of your custom feature
+	              
 	                break;
 	            default:
 	                System.out.println("Invalid option. Please enter a number between 0 and 7.");
