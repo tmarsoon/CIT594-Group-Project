@@ -92,13 +92,14 @@ public class UserInterface {
 	            	 int totalPopulation = processor.getTotalPopulation();
 	                 System.out.println("Total Population: " + totalPopulation);
 	                 break;
-	            case 3:
+	            case 3:  //not finished
 	            	 System.out.println("Please enter 'partial' or 'full': ");
 	            	 String vaxType = scanner.nextLine().toLowerCase();
 	            	//first we need to validate the vaxtype entered by the user is correct
 	    	        if (!vaxType.equalsIgnoreCase("partial") && !vaxType.equalsIgnoreCase("full")) {
 	    	            System.out.println("Invalid vaccination type. Please enter 'partial' or 'full'.");
 	    	            return;
+	    	        }
 	    	        System.out.println("Please enter the date in the format YYYY-MM-DD: ");
 	    	        String date = scanner.nextLine();
 	    	       
@@ -108,9 +109,9 @@ public class UserInterface {
 	    	            return;
 	    	        }
 	    	      //need to call available actions  
-	   
+	    	        	
 	    	        processor.getTotalVaccinationsPerCapita(vaxType, date);
-	                System.out.println("Total Vaccinations Per Capita for ZIP Code " + zipCode + ": " + vaccinationsPerCapita);
+	             
 	                break;
 	            case 4: //finished
 	            	  int specifiedZipCode4 = request5DigitZip();
