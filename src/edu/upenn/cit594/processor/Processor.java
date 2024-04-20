@@ -2,6 +2,7 @@ package edu.upenn.cit594.processor;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,7 +79,48 @@ public class Processor {
 	        
 
 	    }
-//question 4 - 3.4, finished
+//Enters 2 - 3.2 finished    
+	    private int memPop = 0;
+	    public int getTotalPopulation() {
+	       if (memPop == 0) {
+	    		int totalPopulation = 0;
+		        for (ZipCode zipCode : populationMap.values()) {
+		            totalPopulation += zipCode.getPopulation();
+	       }
+	    	memPop = totalPopulation;
+	       }
+	          return memPop;
+	    }
+	    
+//Enters3 - 3.3, not finished
+	    public void getTotalVaccinationsPerCapita(String vaxType, String date) {
+
+	        try {
+	            // Get the total number of vaccinations for the specified type and date
+	            int totalVaccinations = csvCovidReader.getVaccinationNumber(vaxType, date);
+	            
+	            // Display vaccinations per capita for each ZIP Code
+	            for (ZipCode zipCode : populationMap.values()) {
+	                int population = zipCode.getPopulation();
+	                
+	                //Skip if population is 0 or unknown
+	                if (population == 0) continue;
+	                
+	                //Calculate vaccinations per capita
+	                double vaccinationsPerCapita = (double) totalVaccinations / population;
+	                
+	                //Skip if vaccinations per capita is 0
+	                if (vaccinationsPerCapita == 0) continue;
+	                
+	              
+	                System.out.printf("%05d %.4f\n", zipCode.getZip_Code(), vaccinationsPerCapita);
+	            }
+	        } catch (ParseException e) {
+	            System.out.println("Invalid date provided or date is out of range.");
+	        }
+	    }
+	    
+//Enters4 - 3.4, finished
 //memorization for average market value
 private HashMap<Integer, Integer> memValue = new HashMap<>(); 
 public int getAverageMarketValue(int zipCode) {

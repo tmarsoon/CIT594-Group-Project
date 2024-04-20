@@ -1,9 +1,11 @@
 package edu.upenn.cit594.ui;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 import edu.upenn.cit594.processor.Processor;
-import edu.upenn.cit594.processor.TotPopulationProcessor;
+
 
 
 public class UserInterface {
@@ -85,14 +87,29 @@ public class UserInterface {
 	            case 1:
 	                displayMenu();
 	                break;
+	          //this should display 1603797
 	            case 2:
-	                int totalPopulation = populationProcessor.totalPopCalculator("population.csv");
-	                System.out.println("Total Population: " + totalPopulation);
-	                break;
+	            	 int totalPopulation = processor.getTotalPopulation();
+	                 System.out.println("Total Population: " + totalPopulation);
+	                 break;
 	            case 3:
-	                int zipCode = request5DigitZip();
-	                // Assume you have a method in VaccinationProcessor to get total vaccinations per capita
-	                int vaccinationsPerCapita = vaccinationProcessor.getTotalVaccinationsPerCapita(zipCode);
+	            	 System.out.println("Please enter 'partial' or 'full': ");
+	            	 String vaxType = scanner.nextLine().toLowerCase();
+	            	//first we need to validate the vaxtype entered by the user is correct
+	    	        if (!vaxType.equalsIgnoreCase("partial") && !vaxType.equalsIgnoreCase("full")) {
+	    	            System.out.println("Invalid vaccination type. Please enter 'partial' or 'full'.");
+	    	            return;
+	    	        System.out.println("Please enter the date in the format YYYY-MM-DD: ");
+	    	        String date = scanner.nextLine();
+	    	       
+	    	        // Validate date format will call private helper method
+	    	        if (!isValidDateFormat(date)) {
+	    	            System.out.println("Invalid date format. Please enter a date in the format YYYY-MM-DD.");
+	    	            return;
+	    	        }
+	    	      //need to call available actions  
+	   
+	    	        processor.getTotalVaccinationsPerCapita(vaxType, date);
 	                System.out.println("Total Vaccinations Per Capita for ZIP Code " + zipCode + ": " + vaccinationsPerCapita);
 	                break;
 	            case 4: //finished
@@ -119,5 +136,25 @@ public class UserInterface {
 	        }
 	    }
 	}
+	 
+	   
+	    /**
+	     * Checks if the provided date string has the format YYYY-MM-DD.
+	     * 
+	     * @param date The date string to validate.
+	     * @return true if the date format is valid, false otherwise.
+	     */
+	    private boolean isValidDateFormat(String date) {
+	        try {
+	            // Attempt to parse the date
+	            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	            dateFormat.setLenient(false);
+	            dateFormat.parse(date);
+	            return true;
+	        } catch (ParseException e) {
+	            return false;
+	        }
+	    }
+}
 	
 
