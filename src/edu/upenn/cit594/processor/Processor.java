@@ -60,7 +60,7 @@ public class Processor {
 	    private void dataStart() {
 	        
 	        try {
-	            populationMap = populationReader.readPopulationData();
+	            populationMap = PopulationReader.readPopulationData();
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        } catch (ParseException e) {

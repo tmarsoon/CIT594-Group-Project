@@ -5,6 +5,7 @@ import java.io.File;
 import edu.upenn.cit594.datamanagement.PopulationReader;
 import edu.upenn.cit594.datamanagement.PropertiesReader;
 import edu.upenn.cit594.logging.Logger;
+import edu.upenn.cit594.processor.Processor;
 import edu.upenn.cit594.ui.UserInterface;
 
 public class Main {

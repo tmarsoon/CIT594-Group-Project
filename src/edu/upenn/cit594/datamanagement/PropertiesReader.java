@@ -72,7 +72,7 @@ public class PropertiesReader extends FileSuperLogger {
           // Logging the property data file
           logger.logEvent("Successfully read property data file: " + filename);
       } catch (FileNotFoundException e) {
-          // Log file not found error
+          // Log file not found error/
           logger.logEvent("Error: Property data file not found - " + filename);
           e.printStackTrace();
       } catch (IOException e) {
