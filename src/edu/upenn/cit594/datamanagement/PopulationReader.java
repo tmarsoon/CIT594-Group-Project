@@ -24,9 +24,20 @@ public class PopulationReader extends FileSuperLogger {
         	 String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(","); // Assuming data is comma-separated
-                int zipCode = Integer.parseInt(data[0]);
-                int population = Integer.parseInt(data[1]);
-                
+                int zipCode;
+                int population;
+                try {
+                zipCode = Integer.parseInt(data[0]);
+                population = Integer.parseInt(data[1]);               
+            } catch (NumberFormatException e) {
+                //if population figure is not an integer, we skip it
+                continue;
+            }
+                //utilizing String.valueOf to convert integer to String and then check it is 5 digits in length
+                if (String.valueOf(zipCode).length() != 5) {  
+                  //if the zip_code is not 5 digits, we skip it
+                    continue; // Skip processing this line
+                }
                 ZipCode zip_code = new ZipCode(zipCode, population);
                 populationMap.put(zipCode,zip_code);
             }
@@ -36,7 +47,7 @@ public class PopulationReader extends FileSuperLogger {
             // Log file not found error
             logger.logEvent("Error: Covid data isn't found - " + filename);
             e.printStackTrace();
-        } catch (IOException | NumberFormatException e) {
+        } catch (IOException e) {
             // Log IO error
             logger.logEvent("Error:  Reading covid data file - " + filename);
             e.printStackTrace();

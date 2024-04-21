@@ -48,19 +48,27 @@ public class PropertiesReader extends FileSuperLogger {
             	  zipCode = Integer.parseInt(parts[zip_code_column]);
             	// Convert the integer to a string
             	  String zipCodeStr = String.valueOf(zipCode);
-            	  // Using only the first 5 characters and ensure they are numeric
+            	  /*
+            	   * This extracts a substring starting from index 0 up to a maximum of 5 characters, 
+            	   * effectively truncating the ZIP code to 5 characters.
+            	   */
                   String zip = zipCodeStr.substring(0, Math.min(5, zipCodeStr.length()));
-              
+              //the following expression is a regex technique to ensure exactly 5 characters are in the zip code
+              //if the code has fewer than 5 characters or are non-numeric, the record is ignored
                   if (!zip.matches("\\d{5}")) {
                       // Log or handle invalid ZIP code
                       System.out.println("Invalid ZIP code: " + zipCodeStr);
-                      continue; //Skip processing this line
+                      continue; 
                   }
               } catch (NumberFormatException e) {
                   //Handling invalid ZIP code
                   System.out.println("Invalid ZIP code: " + parts[zip_code_column]);
                   continue; //Skip processing this line
               }
+              /*if the market value of the record can't be parsed, it will equal 0.0.
+              //Therefore, we will ignore that entry. If non-numeric entries in the total_livable_area are encountered, 
+               * its value will be 0.0, and still considered in the calculation.
+               */
               if (zipCode != -1 && marketValue != 0.0) {
                   //Create a Property object with the extracted data
                   Property property = new Property(marketValue, totalLivableArea, zipCode);
@@ -82,6 +90,8 @@ public class PropertiesReader extends FileSuperLogger {
   }
     
     // Method to parse property values
+    //this method makes sure that if the program encounters malformed data, it is ignored for the purposes of that calculation
+    //Therefore, this produces the resulkt based only on well-formed data since malformished cannot be parsed
     private double parseProperty(String value, double defaultValue) {
         try {
             return Double.parseDouble(value);
