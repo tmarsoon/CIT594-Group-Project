@@ -36,13 +36,9 @@ public class PopulationReader extends FileSuperLogger {
             // Log file not found error
             logger.logEvent("Error: Covid data isn't found - " + filename);
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             // Log IO error
             logger.logEvent("Error:  Reading covid data file - " + filename);
-            e.printStackTrace();
-        } catch (ParseException | NumberFormatException e) {
-            // Log parsing errors
-            logger.logEvent("Error: Parsing covid data file - " + filename);
             e.printStackTrace();
         }
     }
