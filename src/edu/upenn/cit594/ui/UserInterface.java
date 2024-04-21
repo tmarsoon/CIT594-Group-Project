@@ -136,7 +136,7 @@ public class UserInterface {
 	                break;
 	        }
 	    }
-	}
+	
 	 
 	   
 	    /**
@@ -157,5 +157,3 @@ public class UserInterface {
 	        }
 	    }
 }
-	
-
