@@ -31,9 +31,9 @@ public class Main {
 		        File propertiesDataFiler = new File(propertiesDataFile);
 		        File populationDataFiler = new File(populationDataFile);
 		        File logFiler = new File(logFile);
-		        
+		    
 		        //if any of the files doesn't exist, display an error message
-		        if (!covidDataFiler.exists() || !propertiesDataFiler.exists() || !populationDataFiler.exists() || !logFiler.exists()) {
+		        if (!covidDataFiler.exists() || !propertiesDataFiler.exists() || !populationDataFiler.exists()) {
 		        	System.err.print(true);
 		        	//return void to terminate
 		        	return;
@@ -73,8 +73,10 @@ public class Main {
 
 		        //instantiating new object with interfacedesign data type
 		        UserInterface ui = new UserInterface();
-		      //calling print method
-		        ui.displayMenu();
+		        //calling print method and requesting user input
+		       int userAction = ui.requestUserInput();
+		        // execute action according to input
+		        ui.executeAction(userAction);
 
 		    }
 		    
@@ -84,7 +86,7 @@ public class Main {
 		     * @return
 		     */
 		    private static boolean isValidCovid19Format(String format) {
-		        if (format.equals("csv") || format.equals("json")) {
+		        if (format.endsWith("csv") || format.endsWith("json")) {
 		            return true;
 		        } else {
 		            return false;
