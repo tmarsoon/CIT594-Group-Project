@@ -57,12 +57,14 @@ public class PropertiesReader extends FileSuperLogger {
               //if the code has fewer than 5 characters or are non-numeric, the record is ignored
                   if (!zip.matches("\\d{5}")) {
                       // Log or handle invalid ZIP code
-                      System.out.println("Invalid ZIP code: " + zipCodeStr);
+                	  //delete the print
+                      //System.out.println("Invalid ZIP code: " + zipCodeStr);
                       continue; 
                   }
               } catch (NumberFormatException e) {
                   //Handling invalid ZIP code
-                  System.out.println("Invalid ZIP code: " + parts[zip_code_column]);
+            	  //delete the print
+                  //System.out.println("Invalid ZIP code: " + parts[zip_code_column]);
                   continue; //Skip processing this line
               }
               /*if the market value of the record can't be parsed, it will equal 0.0.
