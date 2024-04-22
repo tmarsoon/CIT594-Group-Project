@@ -31,13 +31,13 @@ public class Main {
 		        File propertiesDataFiler = new File(propertiesDataFile);
 		        File populationDataFiler = new File(populationDataFile);
 		        File logFiler = new File(logFile);
-		    
+		        
 		        //if any of the files doesn't exist, display an error message
-		        if (!covidDataFiler.exists() || !propertiesDataFiler.exists() || !populationDataFiler.exists()) {
+		     if (!covidDataFiler.exists() || !propertiesDataFiler.exists() || !populationDataFiler.exists()) {
 		        	System.err.print(true);
 		        	//return void to terminate
 		        	return;
-		        }
+		      }
 		        	/*      	            
 		             * to handle the error that should be thrown for our program not creating/opening the specified log file,
 		             * a try and catch block is needed since there is a chance that various exceptions can occur
@@ -52,13 +52,16 @@ public class Main {
 		            }
 		            
 		            // handle invalid violations format
-		            if (!isValidCovid19Format(covidDataFile)) {
+		            if (isValidCovid19Format(covidDataFile) == false) {
 		                System.err.print("Error: File format not supported in this program.");
 		             }
 		       
 		       // Creating the logger 
 		       Logger logger = Logger.getInstance();
 		       logger.changeOutputDest(logFile);
+		       logger.logEvent(logFile);
+		       logger.logCommandLineArgs(args);
+		       
 
 		        // Create Reader objects
 		        PropertiesReader propertiesReader = new PropertiesReader(propertiesDataFile, logger); // changed from changeOutputDest to logger
@@ -72,11 +75,9 @@ public class Main {
 		        Processor processor = new Processor(csvCovidReader, jsonCovidReader, populationReader, propertiesReader); // replaced propertiesReader, populationReader  with 
 
 		        //instantiating new object with interfacedesign data type
-		        UserInterface ui = new UserInterface();
-		        //calling print method and requesting user input
-		       int userAction = ui.requestUserInput();
-		        // execute action according to input
-		        ui.executeAction(userAction);
+		        UserInterface ui = new UserInterface(processor, logger);
+		      //calling print method
+		        ui.requestUserInput();
 
 		    }
 		    
@@ -86,7 +87,7 @@ public class Main {
 		     * @return
 		     */
 		    private static boolean isValidCovid19Format(String format) {
-		        if (format.endsWith("csv") || format.endsWith("json")) {
+		        if (format.toLowerCase().endsWith("csv") || format.toLowerCase().endsWith("json")) {
 		            return true;
 		        } else {
 		            return false;
