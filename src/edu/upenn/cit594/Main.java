@@ -1,7 +1,10 @@
 package edu.upenn.cit594;
 
 import java.io.File;
+import java.io.IOException;
 
+import edu.upenn.cit594.datamanagement.CSVCovidData;
+import edu.upenn.cit594.datamanagement.JSONCovidData;
 import edu.upenn.cit594.datamanagement.PopulationReader;
 import edu.upenn.cit594.datamanagement.PropertiesReader;
 import edu.upenn.cit594.logging.Logger;
@@ -10,7 +13,7 @@ import edu.upenn.cit594.ui.UserInterface;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 	
 		        // handle invalid number of runtime args error      
 		        if(args.length != 4) {
@@ -53,26 +56,23 @@ public class Main {
 		                System.err.print("Error: File format not supported in this program.");
 		             }
 		       
-		      // Creating the logger 
+		       // Creating the logger 
 		       Logger logger = Logger.getInstance();
-		       logger.filename =logFile;
-		       changeOutputDest(logFile);
-		      
+		       logger.changeOutputDest(logFile);
 
 		        // Create Reader objects
-		        
-		        PropertiesReader propertiesReader = new PropertiesReader(propertiesDataFile, changeOutputDest);
-		        PopulationReader populationReader = new PopulationReader(populationFile, logger);
-		        
+		        PropertiesReader propertiesReader = new PropertiesReader(propertiesDataFile, logger); // changed from changeOutputDest to logger
+		        PopulationReader populationReader = new PopulationReader(populationDataFile, logger); // changed populationFile to populationDataFile
+		        CSVCovidData csvCovidReader = new CSVCovidData(covidDataFile,logger );
+		        JSONCovidData jsonCovidReader = new JSONCovidData(covidDataFile, logger);
 		     
 		        
 		        // Create Processor object and initialize data
 		        System.out.println("Please wait while we process the data...");
-		        Processor processor = new Processor(
-		        		, propertiesReader, populationReader);
+		        Processor processor = new Processor(csvCovidReader, jsonCovidReader, populationReader, propertiesReader); // replaced propertiesReader, populationReader  with 
 
 		        //instantiating new object with interfacedesign data type
-		        UserInterface ui = new UserInterface(processor, logger);
+		        UserInterface ui = new UserInterface();
 		      //calling print method
 		        ui.displayMenu();
 
