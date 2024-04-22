@@ -20,23 +20,23 @@ public class UserInterface {
 	}
 		
 	
-	private int readInput() {
+	private void readInput() {
 		while (!scanner.hasNextInt()) {
 			System.out.println("Invalid input. Please enter a number between 0 and 7. > ");
 			scanner.next();
 		}
 		int input = scanner.nextInt();
 		scanner.nextLine();
-		return input;
+		executeAction(input);
 	}
 	
 	
-	public int requestUserInput() {
+	public void requestUserInput() {
 		
 			displayMenu();
 			System.out.print("> ");
 			System.out.flush(); 
-			return readInput();
+			readInput();
 	}
 	
 	/** 
@@ -79,7 +79,7 @@ public class UserInterface {
 				+ "5. Show the average total livable area for properties in a specified ZIP Code.\n"
 				+ "6. Show the total market value of properties, per capita, for a specified ZIP Code.\n"
 				+ "7. Show the results of your custom feature.");
-		
+			
 	}
 	
 	 public void executeAction(int action) {
@@ -90,6 +90,7 @@ public class UserInterface {
 	                break;
 	            case 1:
 	                displayMenu();
+	                requestUserInput();
 	                break;
 	          //this should display 1603797
 	            case 2:
