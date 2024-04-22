@@ -37,8 +37,9 @@ public class Processor {
 	     * @param jcd JSONCovidData
 	     * @param popr PopulationReader
 	     * @param propr PropertiesReader
+	     * @throws IOException 
 	     */
-	    public Processor(CSVCovidData ccd, JSONCovidData jcd, PopulationReader popr, PropertiesReader propr) {
+	    public Processor(CSVCovidData ccd, JSONCovidData jcd, PopulationReader popr, PropertiesReader propr) throws IOException {
 	        
 	        // set instance vars
 	        csvCovidReader = ccd;
@@ -57,21 +58,10 @@ public class Processor {
 	     * Instantiates the TreeMap and populates ArrayList fields of ZipCode objects
 	     * for data analysis
 	     */
-	    private void dataStart() {
-	    	 try {
-	    	        populationMap = populationReader.getPopulationMap();
-	    	    } catch (IOException e) {
-	    	        e.printStackTrace();
-	    	        // Handle the exception or rethrow it if necessary
-	    	    }
+	    private void dataStart() throws IOException {
+	    	 populationMap = populationReader.getPopulationMap();
 
-	    	    // Populate properties data
-	    	    try {
-	    	        propertiesReader.readProperties(populationMap);
-	    	    } catch (IOException e) {
-	    	        e.printStackTrace();
-	    	        // Handle the exception or rethrow it if necessary
-	    	    }
+	    	    propertiesReader.readProperties(populationMap);
 	    	}
 //Enters 2 - 3.2 finished    
 	    private int memPop = 0;
