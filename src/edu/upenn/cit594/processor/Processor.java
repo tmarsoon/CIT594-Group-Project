@@ -2,7 +2,7 @@ package edu.upenn.cit594.processor;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,27 +58,21 @@ public class Processor {
 	     * for data analysis
 	     */
 	    private void dataStart() {
-	        
-	        try {
-	            populationMap = PopulationReader.readPopulationData();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        } catch (ParseException e) {
-	        
-	            e.printStackTrace();
-	        }
+	    	 try {
+	    	        populationMap = populationReader.getPopulationMap();
+	    	    } catch (IOException e) {
+	    	        e.printStackTrace();
+	    	        // Handle the exception or rethrow it if necessary
+	    	    }
 
-	        // Populate ArrayList fields of zipCode objects step 1: Properties
-	        try {
-	            propertiesReader.processProperties(populationMap);
-	        } catch (IOException e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
-	        }
-
-	        
-
-	    }
+	    	    // Populate properties data
+	    	    try {
+	    	        propertiesReader.readProperties(populationMap);
+	    	    } catch (IOException e) {
+	    	        e.printStackTrace();
+	    	        // Handle the exception or rethrow it if necessary
+	    	    }
+	    	}
 //Enters 2 - 3.2 finished    
 	    private int memPop = 0;
 	    public int getTotalPopulation() {
