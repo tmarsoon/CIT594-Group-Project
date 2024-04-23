@@ -96,6 +96,7 @@ public class UserInterface {
 	            	System.out.println("calculating total pop...");
 	            	 int totalPopulation = processor.getTotalPopulation();
 	                 System.out.println("Total Population: " + totalPopulation);
+	                 requestUserInput();
 	                 break;
 	            case 3:  //not finished
 	            	 System.out.println("Please enter 'partial' or 'full': ");
