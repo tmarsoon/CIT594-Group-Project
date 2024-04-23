@@ -19,10 +19,12 @@ public class CSVCovidData extends FileSuperLogger{
 	// creating a covid map with the zip code and covid data 
 	
 	private Map <String, Covid19Data> covidMap;
+	private Map <String , int []> vaccinationMap;
 	
 	public CSVCovidData(String filename, Logger logger) {
 	        super(filename, logger);
 	        this.covidMap = new HashMap<>();
+	        this.vaccinationMap = new HashMap<>();
 	    }
 
 	public void csvCovidReader(String csvFile) throws FileNotFoundException, IOException, ParseException, NumberFormatException {
@@ -62,12 +64,21 @@ public class CSVCovidData extends FileSuperLogger{
 				
 				String[] dateArray = dateFormat.format(timeStamp).split(" ");
 				String date = dateArray[0];
-						
-				//debug
-				System.out.println("adding date: " + date);
+				
 				Covid19Data covidData = new Covid19Data(zipCode,timeStamp, partialVax, fullVax, negResults, posResults, testsConducted,deaths, hospitalizations,boosters );
 				// add to map
 				covidMap.put(date, covidData);
+				//debug
+				System.out.println("adding date: " + date);
+				// adding the number of partial and full vax for each date
+				if (!vaccinationMap.containsKey(date)) {
+					vaccinationMap.put(date, new int[2]); // the array contains the partial and full vax
+				}
+				
+				// assigning and adding values for each portion of the map's array for each date
+				int [] vaccinationTotals = vaccinationMap.get(date);
+				vaccinationTotals[0] += partialVax; 
+				vaccinationTotals[1] += fullVax;
 				}
 			
 				// Logging the covid
