@@ -113,7 +113,8 @@ public class UserInterface {
 	    	        }
 	    	      //need to call available actions  
 	    	        	
-	    	        processor.getTotalVaccinationsPerCapita(vaxType, date);
+	    	       double totalVaxPerCapita = processor.getTotalVaccinationsPerCapita(vaxType, date);
+	    	       System.out.println("The total number of vaccination per capita for " + date + " is: " + totalVaxPerCapita);
 	             
 	                break;
 	            case 4: //finished
