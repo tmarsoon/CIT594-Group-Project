@@ -9,4 +9,3 @@ public class AverageGetter implements AverageInterface{
 	        return (int) (totalValue/propertiesNumber);
 	    }
 	}
-
