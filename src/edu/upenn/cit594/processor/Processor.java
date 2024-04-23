@@ -79,34 +79,40 @@ public class Processor {
 //Enters3 - 3.3, not finished
 	    public double getTotalVaccinationsPerCapita(String vaxType, String date) {
 
-	    	double vaccinationsPerCapita = 0.0;
+	    	double totalVaccinationsPerCapita = 0.0;
 	    	
 	        try {
 	            // Get the total number of vaccinations for the specified type and date
 	            int totalVaccinations = csvCovidReader.getVaccinationNumber(vaxType, date);
+	            System.out.println("total vax : " + totalVaccinations);
+	            
+	            //debug
+	            System.out.println("population Map: " + populationMap);
 	            
 	            // Display vaccinations per capita for each ZIP Code
 	            for (ZipCode zipCode : populationMap.values()) {
 	                int population = zipCode.getPopulation();
 	                
 	                //Skip if population is 0 or unknown
-	                if (population == 0) continue;
-	                
+	                if (population == 0) {
+	                	System.out.println("The population for this zip code is 0.");
+	                	continue;
+	                }
 	                //Calculate vaccinations per capita
-	                vaccinationsPerCapita = (double) totalVaccinations / population;
+	                double vaccinationsPerCapita = (double) totalVaccinations / population;
 	                
 	                //Skip if vaccinations per capita is 0
 	                if (vaccinationsPerCapita == 0) continue;
 	                
 	                // accumulate the total vaccinations
-	                totalVaccinations += vaccinationsPerCapita;
+	                totalVaccinationsPerCapita += vaccinationsPerCapita;
 	                
 	                System.out.printf("%05d %.4f\n", zipCode.getZip_Code(), vaccinationsPerCapita);
 	            }
 	        } catch (ParseException e) {
 	            System.out.println("Invalid date provided or date is out of range.");
 	        }
-	        return vaccinationsPerCapita;
+	        return totalVaccinationsPerCapita;
 	    }
 	    
 //Enters4 - 3.4, finished
