@@ -15,7 +15,7 @@ import edu.upenn.cit594.logging.Logger;
 
 public class CSVCovidData extends FileSuperLogger{
 	
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	// creating a covid map with the zip code and covid data 
 	
 	private Map <String, Covid19Data> covidMap;
@@ -29,31 +29,50 @@ public class CSVCovidData extends FileSuperLogger{
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))){
 			String line;
+			
+			// to skip the header portion of the file, we create a flag 
+			boolean skipHeader = false;
+			
 			while ((line = reader.readLine()) != null) {
+				
+				// if the header has not been skipped, update the flag and continue to next line
+				if (!skipHeader) {
+					skipHeader = true;
+					continue; // continuing without doing any action - ie skipping header
+				}
 				//splitting by comma for csv
 				String [] data = line.split(",");
 				
-				int zipCode = Integer.parseInt(data[0]);
-				int negResults = Integer.parseInt(data[1]);
-				int posResults = Integer.parseInt(data[2]);
+				// calling the parseInteger method to avoid empty or null fields
+				int zipCode = parseInteger(data[0]);
+				int negResults = parseInteger(data[1]);
+				int posResults = parseInteger(data[2]);
+				int deaths = parseInteger(data[3]);
+				int hospitalizations = parseInteger(data[4]);
+				int partialVax = parseInteger(data[5]);
+				int fullVax = parseInteger(data[6]);
+				int boosters = parseInteger(data[7]);
+				Date timeStamp = parseDate(data[8]);
+				if (timeStamp == null || zipCode ==-1 || negResults ==-1 || posResults ==-1 || deaths ==-1
+						|| hospitalizations ==-1 || partialVax ==-1 || fullVax ==-1 || boosters ==-1	) {
+					continue;}
+				
+				
 				int testsConducted = negResults + posResults;
-				int deaths = Integer.parseInt(data[3]);
-				int hospitalizations = Integer.parseInt(data[4]);
-				int partialVax = Integer.parseInt(data[5]);
-				int fullVax = Integer.parseInt(data[6]);
-				int boosters = Integer.parseInt(data[7]);
-				Date timeStamp = dateFormat.parse(data[8]);
 				
-				String date = dateFormat.format(timeStamp);
+				String[] dateArray = dateFormat.format(timeStamp).split(" ");
+				String date = dateArray[0];
 						
-				
+				//debug
+				System.out.println("adding date: " + date);
 				Covid19Data covidData = new Covid19Data(zipCode,timeStamp, partialVax, fullVax, negResults, posResults, testsConducted,deaths, hospitalizations,boosters );
 				// add to map
 				covidMap.put(date, covidData);
-			}
+				}
+			
 				// Logging the covid
 	            logger.logEvent(filename);
-	        } catch (FileNotFoundException e) {
+			} catch (FileNotFoundException e) {
 	            // Log file not found error
 	            logger.logEvent("Error: Covid data isn't found - " + filename);
 	            e.printStackTrace();
@@ -61,12 +80,58 @@ public class CSVCovidData extends FileSuperLogger{
 	            // Log IO error
 	            logger.logEvent("Error:  Reading covid data file - " + filename);
 	            e.printStackTrace();
-	        } catch (ParseException | NumberFormatException e) {
+	        } catch (NumberFormatException e) {
 	            // Log parsing errors
 	            logger.logEvent("Error: Parsing covid data file - " + filename);
 	            e.printStackTrace();
 	        }
 	    }
+	
+	/**
+	 * helper method to parse integers and avoid null or empty strings
+	 * @param dataToParse
+	 * @return
+	 */
+	private int parseInteger(String dataToParse) {
+		
+		// if the value is not empty or null, return the integer parsed
+		if (dataToParse != null && !dataToParse.isEmpty()) {
+			try {
+				return Integer.parseInt(dataToParse);
+			} catch (NumberFormatException e) {
+				// Log parsing errors
+	            logger.logEvent("Error: Parsing covid data file - " + filename);
+	            e.printStackTrace();
+			}
+			
+			// otherwise return -1
+		} return -1;
+	}
+	
+	/**
+	 * helper method to parse Dates and avoid null or empty strings
+	 * @param dataToParse
+	 * @return
+	 */
+	private Date parseDate(String dataToParse) {
+		// if the value is not empty or null, return the integer parsed
+			if (dataToParse != null && !dataToParse.isEmpty()) {
+				
+				// cleaning up the data by removing quotes mark at beginning and end of date field
+				// using regex to replace these quotes with empty space to avoid parsing errors
+				dataToParse = dataToParse.replaceAll("^\"|\"$", "");
+		
+				try {
+					return dateFormat.parse(dataToParse);
+					
+				} catch (ParseException e) {
+					// Log parsing errors
+		            logger.logEvent("Error: Parsing covid data file - " + filename);
+		            e.printStackTrace();
+				}
+			} // otherwise, return null
+			return null;
+	}
 	
 	/**
      * Gets the number of vaccinations for the specified type along with the date.
