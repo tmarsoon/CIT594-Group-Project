@@ -4,14 +4,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
+import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.processor.Processor;
 
 
 
 public class UserInterface {
-	private Scanner scanner;
+	 private Scanner scanner;
 	 protected Processor processor;
-	public UserInterface(Processor processor) {
+	 protected Logger logger;
+	public UserInterface(Processor processor, Logger logger) {
 		this.scanner = new Scanner(System.in);
 		this.processor = processor;
 	}
