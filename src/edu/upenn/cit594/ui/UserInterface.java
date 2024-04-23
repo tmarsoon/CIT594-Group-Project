@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
-import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.processor.Processor;
 
 
@@ -12,31 +11,29 @@ import edu.upenn.cit594.processor.Processor;
 public class UserInterface {
 	private Scanner scanner;
 	 protected Processor processor;
-	 protected Logger logger;
-	public UserInterface(Processor processor, Logger logger) {
+	public UserInterface(Processor processor) {
 		this.scanner = new Scanner(System.in);
 		this.processor = processor;
-		this.logger = logger;
 	}
 		
 	
-	private void readInput() {
+	private int readInput() {
 		while (!scanner.hasNextInt()) {
 			System.out.println("Invalid input. Please enter a number between 0 and 7. > ");
 			scanner.next();
 		}
 		int input = scanner.nextInt();
 		scanner.nextLine();
-		executeAction(input);
+		return input;
 	}
 	
 	
-	public void requestUserInput() {
+	public int requestUserInput() {
 		
 			displayMenu();
 			System.out.print("> ");
 			System.out.flush(); 
-			readInput();
+			return readInput();
 	}
 	
 	/** 
@@ -79,7 +76,7 @@ public class UserInterface {
 				+ "5. Show the average total livable area for properties in a specified ZIP Code.\n"
 				+ "6. Show the total market value of properties, per capita, for a specified ZIP Code.\n"
 				+ "7. Show the results of your custom feature.");
-			
+		
 	}
 	
 	 public void executeAction(int action) {
@@ -89,11 +86,12 @@ public class UserInterface {
 	                System.exit(0);
 	                break;
 	            case 1:
-	                displayMenu();
-	                requestUserInput();
+	            	requestUserInput();
 	                break;
 	          //this should display 1603797
 	            case 2:
+	            	// debug
+	            	System.out.println("calculating total pop...");
 	            	 int totalPopulation = processor.getTotalPopulation();
 	                 System.out.println("Total Population: " + totalPopulation);
 	                 break;
