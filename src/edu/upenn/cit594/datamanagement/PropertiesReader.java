@@ -57,13 +57,11 @@ public class PropertiesReader extends FileSuperLogger {
               //if the code has fewer than 5 characters or are non-numeric, the record is ignored
                   if (!zip.matches("\\d{5}")) {
                       // Log or handle invalid ZIP code
-                	  //delete the print
-                      //System.out.println("Invalid ZIP code: " + zipCodeStr);
+                     // System.out.println("Invalid ZIP code: " + zipCodeStr);
                       continue; 
                   }
               } catch (NumberFormatException e) {
                   //Handling invalid ZIP code
-            	  //delete the print
                   //System.out.println("Invalid ZIP code: " + parts[zip_code_column]);
                   continue; //Skip processing this line
               }
@@ -76,7 +74,7 @@ public class PropertiesReader extends FileSuperLogger {
                   Property property = new Property(marketValue, totalLivableArea, zipCode);
                   //Add property to your map or any other data structure
                   propertyMap.put(zipCode, property);
-              }
+                   }
           }
           // Logging the property data file
           logger.logEvent("Successfully read property data file: " + filename);
