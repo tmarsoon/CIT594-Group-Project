@@ -66,8 +66,6 @@ public class Processor {
 //Enters 2 - 3.2 finished    
 	    private int memPop = 0;
 	    public int getTotalPopulation() {
-	    	//debug
-	    	System.out.println(populationMap);
 	       if (memPop == 0) {
 	    		int totalPopulation = 0;
 		        for (ZipCode zipCode : populationMap.values()) {
@@ -79,8 +77,10 @@ public class Processor {
 	    }
 	    
 //Enters3 - 3.3, not finished
-	    public void getTotalVaccinationsPerCapita(String vaxType, String date) {
+	    public double getTotalVaccinationsPerCapita(String vaxType, String date) {
 
+	    	double vaccinationsPerCapita = 0.0;
+	    	
 	        try {
 	            // Get the total number of vaccinations for the specified type and date
 	            int totalVaccinations = csvCovidReader.getVaccinationNumber(vaxType, date);
@@ -93,17 +93,20 @@ public class Processor {
 	                if (population == 0) continue;
 	                
 	                //Calculate vaccinations per capita
-	                double vaccinationsPerCapita = (double) totalVaccinations / population;
+	                vaccinationsPerCapita = (double) totalVaccinations / population;
 	                
 	                //Skip if vaccinations per capita is 0
 	                if (vaccinationsPerCapita == 0) continue;
 	                
-	              
+	                // accumulate the total vaccinations
+	                totalVaccinations += vaccinationsPerCapita;
+	                
 	                System.out.printf("%05d %.4f\n", zipCode.getZip_Code(), vaccinationsPerCapita);
 	            }
 	        } catch (ParseException e) {
 	            System.out.println("Invalid date provided or date is out of range.");
 	        }
+	        return vaccinationsPerCapita;
 	    }
 	    
 //Enters4 - 3.4, finished
