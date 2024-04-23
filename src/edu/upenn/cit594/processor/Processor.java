@@ -66,6 +66,8 @@ public class Processor {
 //Enters 2 - 3.2 finished    
 	    private int memPop = 0;
 	    public int getTotalPopulation() {
+	    	//debug
+	    	System.out.println(populationMap);
 	       if (memPop == 0) {
 	    		int totalPopulation = 0;
 		        for (ZipCode zipCode : populationMap.values()) {
