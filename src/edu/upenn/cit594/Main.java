@@ -84,9 +84,9 @@ public class Main {
 		     
 		        // Create Processor object and initialize data
 		        System.out.println("Please wait while we process the data...");
-		        Processor processor = new Processor(csvCovidReader, jsonCovidReader, populationReader, propertiesReader); // replaced propertiesReader, populationReader  with 
+		        Processor processor = new Processor(populationDataFile, csvCovidReader, jsonCovidReader, populationReader, propertiesReader); // replaced propertiesReader, populationReader  with 
 		        
-		        // reading the data
+		        // reading the population and properties data
 		        populationReader.readPopulationData(populationDataFile);
 		        
 		        //instantiating new object with interfacedesign data type
