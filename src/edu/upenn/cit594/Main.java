@@ -22,6 +22,9 @@ public class Main {
 		            return;
 		        }
 		        
+		        // creating the fileType variable
+		        String fileType;
+		        
 		        // store args into local vars
 		        String covidDataFile = args[0];
 		        String propertiesDataFile = args[1];
@@ -70,9 +73,11 @@ public class Main {
 		        // read the covid file
 		        if (covidDataFile.endsWith(".csv")) {
 		        	csvCovidReader.csvCovidReader(covidDataFile);
+		        	fileType = "csv";
 		        }
 		        else {
 		        	jsonCovidReader.jsonCovidReader(covidDataFile);
+		        	fileType = "JSON";
 		        }
 		        
 		        
@@ -89,7 +94,7 @@ public class Main {
 		        //calling print method and requesting user input
 		        int userAction = ui.requestUserInput();
 		        // execute action according to input
-		        ui.executeAction(userAction);
+		        ui.executeAction(userAction, fileType);
 
 		    }
 		    
