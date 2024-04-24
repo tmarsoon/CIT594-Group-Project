@@ -41,6 +41,8 @@ public class ZipCode {
 	    }
 
 	    public HashSet<Property> getProperties() {
+	    	//debug
+	    	System.out.println("Current properties." + properties);
 	        return properties;
 	    }
 
