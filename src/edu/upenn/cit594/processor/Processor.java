@@ -38,16 +38,28 @@ public class Processor {
 	     * @param popr PopulationReader
 	     * @param propr PropertiesReader
 	     * @throws IOException 
+	     * @throws ParseException 
+	     * @throws NumberFormatException 
 	     */
-	    public Processor(CSVCovidData ccd, JSONCovidData jcd, PopulationReader popr, PropertiesReader propr) throws IOException {
+	    public Processor(String populationFile, CSVCovidData ccd, JSONCovidData jcd, PopulationReader popr, PropertiesReader propr) throws IOException, NumberFormatException, ParseException {
 	        
 	        // set instance vars
 	        csvCovidReader = ccd;
 	        jsonCovidReader = jcd;
 	        populationReader = popr;
-	        propertiesReader = propr;	        
+	        
+	        // reading population file
+	        popr.readPopulationData(populationFile);
+	        
+	        // populating the population map
+	        populationMap = popr.getPopulationMap();
+	        
+	        // setting instance of variable
+	        propertiesReader = propr;	
+	        
 	        //Starting Data
 	        dataStart();
+
 	    }
 
 	    public Map<Integer, ZipCode> getPopulationMap() {
@@ -61,7 +73,7 @@ public class Processor {
 	    private void dataStart() throws IOException {
 	    	 populationMap = populationReader.getPopulationMap();
 
-	    	    propertiesReader.readProperties(populationMap);
+	    	   propertiesReader.readProperties(populationMap);
 	    	}
 //Enters 2 - 3.2 finished    
 	    private int memPop = 0;
@@ -158,16 +170,29 @@ private double vaccinationPerCapitaCalculator(int totalVaccinations) {
 //memorization for average market value
 private HashMap<Integer, Integer> memValue = new HashMap<>(); 
 public int getAverageMarketValue(int zipCode) {
+	
+	//read the pro
     if (memValue.containsKey(zipCode)) {
         return memValue.get(zipCode);
     } else {
         if (populationMap.containsKey(zipCode)) {
             ZipCode code = populationMap.get(zipCode);
+           
+            // iterating over the properties to retrieve all properties associated with zipcode
+            for (Property property : code.getProperties()) {
+            	//debug
+            	System.out.println("Retrieving properties for the zip code provided: " + property);
+            }
             int numProperties = code.getProperties().size();
+            //debug
+            System.out.println("The number of properties for this zip code is : "+ numProperties); // issue here, nothing gets pulled
+            
             if (numProperties == 0) {
                 // If there are no properties in the ZIP code, return 0
+            	System.out.println("There are no properties in the given zip code.");
                 return 0;
             }
+            
             double sumMarketValue = 0;
             for (Property property : code.getProperties()) {
                 sumMarketValue += property.getMarket_Value();
@@ -194,7 +219,10 @@ public int getAverageLivableArea(int zipCode) {
 	        int averageLivableArea = 0;
 	        if (populationMap.containsKey(zipCode)) {
 	            ZipCode code = populationMap.get(zipCode);
+	            
+	            
 	            int numberOfProperties = code.getProperties().size();
+	            
 	            if (numberOfProperties == 0) {
 	                System.out.println("No properties available for the specified ZIP Code.");
 	                return 0;
