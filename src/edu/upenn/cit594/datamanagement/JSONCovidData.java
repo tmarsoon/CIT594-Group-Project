@@ -59,8 +59,7 @@ import edu.upenn.cit594.logging.Logger;
 	                Covid19Data jsonCovidData = new Covid19Data(zipCode, timeStamp, partialVax, fullVax, negResults,
 	                        posResults, testsConducted, deaths, hospitalizations, boosters);
 	                covidMap.put(date, jsonCovidData);
-	                //debug
-	                System.out.println("adding date: " + date);
+	                
 	            }
 	         // Logging the covid event
 	            logger.logEvent(filename);
