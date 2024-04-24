@@ -77,44 +77,83 @@ public class Processor {
 	    }
 	    
 //Enters3 - 3.3, not finished
-	    public double getTotalVaccinationsPerCapita(String vaxType, String date) {
+	    /**
+	     * method to get and return the total vax per capita 
+	     * @param vaxType
+	     * @param date
+	     * @param filetype: json or csv
+	     * @return
+	     */
+	    public double getTotalVaccinationsPerCapita(String fileType, String vaxType, String date) {
 
 	    	double totalVaccinationsPerCapita = 0.0;
 	    	
 	        try {
 	            // Get the total number of vaccinations for the specified type and date
-	            int totalVaccinations = csvCovidReader.getVaccinationNumber(vaxType, date);
-	            System.out.println("total vax : " + totalVaccinations);
+	        	// if file type is csv
+	        	if (fileType.endsWith("csv")) {
+		            int totalVaccinations = csvCovidReader.getVaccinationNumber(vaxType, date);
+		            System.out.println("total vax : " + totalVaccinations);
+		            
+		            totalVaccinationsPerCapita = vaccinationPerCapitaCalculator(totalVaccinations);
+	        	}
+	        	
+	        	// otherwise if the file is json
+	        	else if (fileType.endsWith("JSON")) {
+	        		int totalVaccinations = jsonCovidReader.getVaccinationNumber(vaxType, date);
+		            System.out.println("total vax : " + totalVaccinations);
+		            
+		            totalVaccinationsPerCapita = vaccinationPerCapitaCalculator(totalVaccinations);
+	        	}
+	        	
+	        	// otherwise, the file is not valid
+	        	else {
+	        		 System.out.println("The file type provided is not valid (not csv or JSON).");
+	        	}
 	            
-	            //debug
-	            System.out.println("population Map: " + populationMap);
-	            
-	            // Display vaccinations per capita for each ZIP Code
-	            for (ZipCode zipCode : populationMap.values()) {
-	                int population = zipCode.getPopulation();
-	                
-	                //Skip if population is 0 or unknown
-	                if (population == 0) {
-	                	System.out.println("The population for this zip code is 0.");
-	                	continue;
-	                }
-	                //Calculate vaccinations per capita
-	                double vaccinationsPerCapita = (double) totalVaccinations / population;
-	                
-	                //Skip if vaccinations per capita is 0
-	                if (vaccinationsPerCapita == 0) continue;
-	                
-	                // accumulate the total vaccinations
-	                totalVaccinationsPerCapita += vaccinationsPerCapita;
-	                
-	                System.out.printf("%05d %.4f\n", zipCode.getZip_Code(), vaccinationsPerCapita);
-	            }
+
 	        } catch (ParseException e) {
 	            System.out.println("Invalid date provided or date is out of range.");
 	        }
 	        return totalVaccinationsPerCapita;
 	    }
 	    
+
+/**
+ * heloer method to calculate the vaccination per capita	    
+ * @param totalVaccinations
+ * @return
+ */
+private double vaccinationPerCapitaCalculator(int totalVaccinations) {
+	
+	double totalVaccinationsPerCapita = 0.0;
+	
+	// Display vaccinations per capita for each ZIP Code
+    for (ZipCode zipCode : populationMap.values()) {
+        int population = zipCode.getPopulation();
+        
+        //Skip if population is 0 or unknown
+        if (population == 0) {
+        	System.out.println("The population for this zip code is 0.");
+        	continue;
+        }
+        //Calculate vaccinations per capita
+        double vaccinationsPerCapita = (double) totalVaccinations / population;
+        
+        //Skip if vaccinations per capita is 0
+        if (vaccinationsPerCapita == 0) continue;
+        
+        // accumulate the total vaccinations
+        totalVaccinationsPerCapita += vaccinationsPerCapita;
+        
+        System.out.printf("%05d %.4f\n", zipCode.getZip_Code(), vaccinationsPerCapita);
+    }
+    
+    return totalVaccinationsPerCapita;
+}
+
+
+
 //Enters4 - 3.4, finished
 //memorization for average market value
 private HashMap<Integer, Integer> memValue = new HashMap<>(); 
