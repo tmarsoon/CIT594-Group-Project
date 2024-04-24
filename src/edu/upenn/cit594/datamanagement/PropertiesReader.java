@@ -37,7 +37,18 @@ public class PropertiesReader extends FileSuperLogger {
               locateColumn(columns);
           }
           String line;
+          
+          // to skip the header portion of the file, we create a flag 
+          boolean skipHeader = false;
+			
           while ((line = br.readLine()) != null) {
+        	  
+        	// if the header has not been skipped, update the flag and continue to next line
+				if (!skipHeader) {
+					skipHeader = true;
+					continue; // continuing without doing any action - ie skipping header
+				}
+				
               String[] parts = line.split(",");
               // Extract market value and total livable area
               double marketValue = parseProperty(parts[market_value_column], 0.0);
