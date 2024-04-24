@@ -37,24 +37,30 @@ import edu.upenn.cit594.logging.Logger;
 	            
 	            for (Object obj : jsonArray) {
 	                JSONObject jsonObj = (JSONObject) obj;
-
-	                int zipCode = Integer.parseInt(jsonObj.get("zip_code").toString());
-	                int negResults = Integer.parseInt(jsonObj.get("NEG").toString());
-	                int posResults = Integer.parseInt(jsonObj.get("POS").toString());
+	                
+	                Object zipCodeObj = jsonObj.get("zip_code");
+	                if ( zipCodeObj != null) {
+	                	int zipCode = Integer.parseInt(zipCodeObj.toString());
+	                }
+	                int zipCode = getIntFromObj(jsonObj, "zip_code");
+	                int negResults = getIntFromObj(jsonObj, "NEG");
+	                int posResults = getIntFromObj(jsonObj,"POS");
 	                int testsConducted = negResults + posResults;
-	                int deaths = Integer.parseInt(jsonObj.get("deaths").toString());
-	                int hospitalizations = Integer.parseInt(jsonObj.get("hospitalized").toString());
-	                int partialVax = Integer.parseInt(jsonObj.get("partially_vaccinated").toString());
-	                int fullVax = Integer.parseInt(jsonObj.get("fully_vaccinated").toString());
-	                int boosters = Integer.parseInt(jsonObj.get("boosted").toString());
+	                int deaths = getIntFromObj(jsonObj, "deaths");
+	                int hospitalizations = getIntFromObj(jsonObj,"hospitalized");
+	                int partialVax = getIntFromObj(jsonObj, "partially_vaccinated");
+	                int fullVax = getIntFromObj(jsonObj, "fully_vaccinated");
+	                int boosters = getIntFromObj(jsonObj, "boosted");
 	               //im not seeing a boosted section in the json file
 
-	                Date timeStamp = dateFormat.parse(jsonObj.get("etl_timestamp").toString());
+	                Date timeStamp = getDateFromObj(jsonObj, "etl_timestamp");
 	                String date = dateFormat.format(timeStamp);
 
 	                Covid19Data jsonCovidData = new Covid19Data(zipCode, timeStamp, partialVax, fullVax, negResults,
 	                        posResults, testsConducted, deaths, hospitalizations, boosters);
 	                covidMap.put(date, jsonCovidData);
+	                //debug
+	                System.out.println("adding date: " + date);
 	            }
 	         // Logging the covid event
 	            logger.logEvent(filename);
@@ -73,6 +79,67 @@ import edu.upenn.cit594.logging.Logger;
 	        }
 	    }
 	  
+	    /**
+	     * helper method to parse file for valid values 
+	     * @param covidData
+	     * @param key
+	     * @return
+	     */
+	    private int getIntFromObj(JSONObject covidData, String key) {
+	    	
+	    	// get the object from the map
+	    	Object objectToRetrieve = covidData.get(key);
+	    	
+	    	if (objectToRetrieve != null) {
+	    		try {
+	    			
+	    			// return the parsed int
+	    			return Integer.parseInt(objectToRetrieve.toString());
+	    			
+	    		} catch (NumberFormatException e) {
+		            // Log parsing errors
+		            logger.logEvent("Error: Parsing covid data file - " + filename);
+		            e.printStackTrace();
+	    		}
+	    	}
+	    	
+	    	// otherwise return 0
+	    	return 0;
+	    }
+	    
+	    /**
+	     * helper method to parse file for valid values 
+	     * @param covidData
+	     * @param key
+	     * @return
+	     * @throws java.text.ParseException 
+	     */
+	    private Date getDateFromObj(JSONObject covidDateData, String key) throws java.text.ParseException {
+	    	
+	    	// get the object from the map
+	    	Object objectToRetrieve = covidDateData.get(key);
+	    	
+	    	if (objectToRetrieve != null) {
+	    		try {
+	    			// cleaning up the data by removing quotes mark at beginning and end of date field
+					// using regex to replace these quotes with empty space to avoid parsing errors
+	    			String covidDateStr = objectToRetrieve.toString().replaceAll("^\"|\"$", "");
+			
+	    			// return the parsed date
+	    			
+	    			return dateFormat.parse(covidDateStr);
+	    		} catch (NumberFormatException e) {
+		            // Log parsing errors
+		            logger.logEvent("Error: Parsing covid data file - " + filename);
+		            e.printStackTrace();
+	    	}
+	    	}
+	    	
+	    	// otherwise return empty date
+	    	return new Date();
+	    }
+	    
+	    
 	    //here we throw the import statement directly to bypass this parseexception naming conflict
 	    public int getVaccinationNumber(String vaxType, String date) throws java.text.ParseException {
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -103,4 +170,5 @@ import edu.upenn.cit594.logging.Logger;
 			        return 0;
 			}
 	    }
+	 
 	}
