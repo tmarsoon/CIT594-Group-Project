@@ -202,7 +202,7 @@ public int getTotalMarketValuePerCapita(int zipCode){
 	            System.out.println("Total market value of properties in ZIP Code is 0.");
 	            return 0;
 	        }
-//
+
 	        int marketValuePerCapita = (int) (sumMarketValue / population);
 	        memValuePC.put(zipCode, marketValuePerCapita);
 	        return marketValuePerCapita;
