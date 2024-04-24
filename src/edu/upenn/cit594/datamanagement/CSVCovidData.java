@@ -68,8 +68,6 @@ public class CSVCovidData extends FileSuperLogger{
 				Covid19Data covidData = new Covid19Data(zipCode,timeStamp, partialVax, fullVax, negResults, posResults, testsConducted,deaths, hospitalizations,boosters );
 				// add to map
 				covidMap.put(date, covidData);
-				//debug
-				System.out.println("adding date: " + date);
 				// adding the number of partial and full vax for each date
 				if (!vaccinationMap.containsKey(date)) {
 					vaccinationMap.put(date, new int[2]); // the array contains the partial and full vax
