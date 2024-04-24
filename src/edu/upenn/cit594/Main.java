@@ -14,7 +14,7 @@ import edu.upenn.cit594.ui.UserInterface;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException, NumberFormatException, ParseException {
+	public static void main(String[] args) throws IOException, NumberFormatException, ParseException, org.json.simple.parser.ParseException {
 	
 		        // handle invalid number of runtime args error      
 		        if(args.length != 4) {
@@ -65,9 +65,17 @@ public class Main {
 		        PropertiesReader propertiesReader = new PropertiesReader(propertiesDataFile, logger); // changed from changeOutputDest to logger
 		        PopulationReader populationReader = new PopulationReader(populationDataFile, logger); // changed populationFile to populationDataFile
 		        CSVCovidData csvCovidReader = new CSVCovidData(covidDataFile,logger );
-		        // read the covid file
-		        csvCovidReader.csvCovidReader(covidDataFile);
 		        JSONCovidData jsonCovidReader = new JSONCovidData(covidDataFile, logger);
+		        
+		        // read the covid file
+		        if (covidDataFile.endsWith(".csv")) {
+		        	csvCovidReader.csvCovidReader(covidDataFile);
+		        }
+		        else {
+		        	jsonCovidReader.jsonCovidReader(covidDataFile);
+		        }
+		        
+		        
 		     
 		        // Create Processor object and initialize data
 		        System.out.println("Please wait while we process the data...");
@@ -91,7 +99,7 @@ public class Main {
 		     * @return
 		     */
 		    private static boolean isValidCovid19Format(String format) {
-		        if (format.endsWith("csv") || format.endsWith("json")) {
+		        if (format.endsWith("csv") || format.endsWith("JSON")) {
 		            return true;
 		        } else {
 		            return false;
