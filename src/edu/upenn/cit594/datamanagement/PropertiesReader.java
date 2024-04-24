@@ -37,21 +37,14 @@ public class PropertiesReader extends FileSuperLogger {
               locateColumn(columns);
           }
           String line;
-          
-          // to skip the header portion of the file, we create a flag 
-          boolean skipHeader = false;
+         
 			
           while ((line = br.readLine()) != null) {
         	  
-        	// if the header has not been skipped, update the flag and continue to next line
-				if (!skipHeader) {
-					skipHeader = true;
-					continue; // continuing without doing any action - ie skipping header
-				}
-				
               String[] parts = line.split(",");
               // Extract market value and total livable area
               double marketValue = parseProperty(parts[market_value_column], 0.0);
+             
               double totalLivableArea = parseProperty(parts[total_livable_area_column], 0.0);
               // Extract and validate ZIP code
               int zipCode = 0;
@@ -76,19 +69,31 @@ public class PropertiesReader extends FileSuperLogger {
                   //System.out.println("Invalid ZIP code: " + parts[zip_code_column]);
                   continue; //Skip processing this line
               }
+              
+              // creating a ZipCode var: getting zip code from the map
+              ZipCode code = zipCodeMap.get(zipCode);
+
               /*if the market value of the record can't be parsed, it will equal 0.0.
               //Therefore, we will ignore that entry. If non-numeric entries in the total_livable_area are encountered, 
                * its value will be 0.0, and still considered in the calculation.
                */
-              if (zipCode != -1 && marketValue != 0.0) {
+              
+              if (zipCode != -1 && marketValue != 0.0 && code != null) {
                   //Create a Property object with the extracted data
                   Property property = new Property(marketValue, totalLivableArea, zipCode);
                   //Add property to your map or any other data structure
                   propertyMap.put(zipCode, property);
+                  // adding the property to the Properties Set (ZipCode Class) for given zip code
+                  code.addProperty(property);
+       
                    }
           }
+          //debug
+          System.out.println("Zip code map size: " + zipCodeMap.size());
+          
           // Logging the property data file
           logger.logEvent("Successfully read property data file: " + filename);
+          
       } catch (FileNotFoundException e) {
           // Log file not found error/
           logger.logEvent("Error: Property data file not found - " + filename);
