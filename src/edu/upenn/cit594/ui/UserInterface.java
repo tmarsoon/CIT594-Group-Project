@@ -81,7 +81,7 @@ public class UserInterface {
 		
 	}
 	
-	 public void executeAction(int action) {
+	 public void executeAction(int action, String fileType) {
 	        switch (action) {
 	            case 0:
 	                System.out.println("Exiting the program.");
@@ -116,7 +116,8 @@ public class UserInterface {
 	    	        }
 	    	      //need to call available actions  
 	    	       System.out.println("BEGIN OUTPUT"); 	
-	    	       double totalVaxPerCapita = processor.getTotalVaccinationsPerCapita(vaxType, date);
+	    	       // processing the data based on the file given by user
+	    	       double totalVaxPerCapita = processor.getTotalVaccinationsPerCapita(fileType, vaxType, date);
 	    	       System.out.println("END OUTPUT"); 
 	    	       
 	                break;
