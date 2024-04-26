@@ -1,0 +1,38 @@
+package edu.upenn.cit594.data;
+
+public class VaccinationData {
+
+	private int zipCode;
+	private int partialVax;
+	private int fullVax;
+	
+	public VaccinationData(int zipCode, int partialVax, int fullVax ) {
+		this.zipCode = zipCode;
+		this.partialVax = partialVax;
+		this.fullVax = fullVax;
+	}
+	
+	/**
+	 * getter methods
+	 */
+	public int getzipCode() {
+		return zipCode;
+	}
+	
+	public int getFullVaccinations() {
+		return fullVax;
+	}
+	
+	public int getPartialVaccinations() {
+		return partialVax;
+	}
+	
+	
+	@Override
+    public String toString() {
+        return "Vaccination data for Zip Code: " + zipCode + "\n" +
+               "Partial Vaccinations: " + partialVax + "\n" +
+               "Full Vaccinations: " + fullVax + "\n" 
+               ;
+    }
+}
