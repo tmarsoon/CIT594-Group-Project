@@ -82,4 +82,13 @@ public class Covid19Data {
 	    	return boostersGiven;
 	}
 
+		public int getPosResults() {
+			// TODO Auto-generated method stub
+			return positiveResult;
+		}
+		public int getNegResults() {
+			return negativeResult;
+		}
+		
+		
 }
