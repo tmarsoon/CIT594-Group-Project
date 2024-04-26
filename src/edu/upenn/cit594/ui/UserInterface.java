@@ -1,5 +1,7 @@
 package edu.upenn.cit594.ui;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
@@ -20,9 +22,12 @@ public class UserInterface {
 		
 	
 	private int readInput() {
+		
 		while (!scanner.hasNextInt()) {
+
 			System.out.println("Invalid input. Please enter a number between 0 and 7. > ");
 			scanner.next();
+		
 		}
 		int input = scanner.nextInt();
 		scanner.nextLine();
@@ -44,7 +49,7 @@ public class UserInterface {
 	 */
 	public int request5DigitZip() {
 		while (true) {
-			System.out.print("Please enter a 5-digit Zip Code.");
+			System.out.print("Please enter a 5-digit Zip Code ");
 			System.out.print("> ");
 			System.out.flush(); 
 			
@@ -89,13 +94,13 @@ public class UserInterface {
 	                break;
 	            case 1:
 	            	requestUserInput();
+	            	logger.logUserInput(Integer.toString(action));
 	                break;
 	          //this should display 1603797
 	            case 2:
-	            	// debug
-	            	System.out.println("calculating total pop...");
 	            	 int totalPopulation = processor.getTotalPopulation();
 	                 System.out.println("Total Population: " + totalPopulation);
+
 	                 break;
 	            case 3:  //not finished
 	            	 System.out.println("Please enter 'partial' or 'full': ");
@@ -123,24 +128,49 @@ public class UserInterface {
 	                break;
 	            case 4: //finished
 	            	  int specifiedZipCode4 = request5DigitZip();
+	            	  System.out.println("calculating...");
 	                  int averageMarketValue = processor.getAverageMarketValue(specifiedZipCode4);
-	                  System.out.println("Average Market Value for ZIP Code " + specifiedZipCode4 + ": " + averageMarketValue);
+	                  NumberFormat format = NumberFormat.getInstance();
+	                  String formattedAverageMarketValue = format.format(averageMarketValue);
+	                  System.out.println("The average Market Value for ZIP Code, " + specifiedZipCode4 + ", is $" +  formattedAverageMarketValue);
 	                  break;
 	            case 5: //finished
 	            	 int specifiedZipCode5 = request5DigitZip();
+	            	  System.out.println("calculating...");
 	                 int averageLivableArea = processor.getAverageLivableArea(specifiedZipCode5);
-	                 System.out.println("Average Total Livable Area for ZIP Code " + specifiedZipCode5 + ": " + averageLivableArea);
+	                 NumberFormat format2 = NumberFormat.getInstance();
+	                 String formattedAverageLivableArea = format2.format(averageLivableArea);
+	                 System.out.println("The average Total Livable Area for ZIP Code, " + specifiedZipCode5 + ", is $" +  formattedAverageLivableArea);
 	                 break;	        
 	            case 6: //finished
 	            	 int specifiedZipCode6 = request5DigitZip();
+	            	 System.out.println("calculating...");
 	                 int totalMarketValuePerCapita = processor.getTotalMarketValuePerCapita(specifiedZipCode6);
-	                 System.out.println("Total Market Value of Properties Per Capita for ZIP Code " + specifiedZipCode6 + ": " + totalMarketValuePerCapita);
+	                 NumberFormat format3 = NumberFormat.getInstance();
+	                 String formattedMarketValuePerCapita = format3.format(totalMarketValuePerCapita);
+	                 System.out.println("The total Market Value of Properties Per Capita for ZIP Code, " + specifiedZipCode6 + ", is $"  + formattedMarketValuePerCapita );
 	                 break;
 	            case 7:
-	              
+	            	 int specifiedZipCode7 = request5DigitZip(); 
+	            	 System.out.println("calculating...");
+	            	 double correlationCoefficient = processor.calculateCorrelation(specifiedZipCode7);
+	            	
+	            	 
+	            	  System.out.println("Coefficient Coefficient: " + correlationCoefficient);
+	            	 System.out.println("Interpretation: ");
+	            	 if (correlationCoefficient > 0) {
+	            	     System.out.println("There is a positive correlation between COVID-19 positivity rates and property values per capita.");
+	            	 } else if (correlationCoefficient < 0) {
+	            	     System.out.println("There is a negative correlation between COVID-19 positivity rates and property values per capita.");
+	            	 } else {
+	            	     System.out.println("There is no significant linear relationship between COVID-19 positivity rates and property values per capita.");
+	            	 }
+	            	   
 	                break;
+	                
 	            default:
 	                System.out.println("Invalid option. Please enter a number between 0 and 7.");
+	                
 	                break;
 	        }
 	    }
