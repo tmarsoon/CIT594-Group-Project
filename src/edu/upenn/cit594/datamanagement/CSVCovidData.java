@@ -11,20 +11,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.upenn.cit594.data.Covid19Data;
+import edu.upenn.cit594.data.VaccinationData;
 import edu.upenn.cit594.logging.Logger;
 
 public class CSVCovidData extends FileSuperLogger{
 	
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	// creating a covid map with the zip code and covid data 
 	
+	// creating a covid map with the zip code and covid data 
+	private Map <String, Map <Integer, VaccinationData>> covidVaxMap;
 	private Map <String, Covid19Data> covidMap;
-	private Map <String , int []> vaccinationMap;
+	
+	
 	
 	public CSVCovidData(String filename, Logger logger) {
 	        super(filename, logger);
-	        this.covidMap = new HashMap<>();
-	        this.vaccinationMap = new HashMap<>();
+	        this.covidVaxMap = new HashMap<>();
+	        this.covidMap = new HashMap<>();;
 	    }
 
 	public void csvCovidReader(String csvFile) throws FileNotFoundException, IOException, ParseException, NumberFormatException {
@@ -36,6 +39,7 @@ public class CSVCovidData extends FileSuperLogger{
 			boolean skipHeader = false;
 			
 			while ((line = reader.readLine()) != null) {
+			
 				
 				// if the header has not been skipped, update the flag and continue to next line
 				if (!skipHeader) {
@@ -55,32 +59,39 @@ public class CSVCovidData extends FileSuperLogger{
 				int fullVax = parseInteger(data[6]);
 				int boosters = parseInteger(data[7]);
 				Date timeStamp = parseDate(data[8]);
-				if (timeStamp == null || zipCode ==-1 || negResults ==-1 || posResults ==-1 || deaths ==-1
-						|| hospitalizations ==-1 || partialVax ==-1 || fullVax ==-1 || boosters ==-1	) {
-					continue;}
 				
+				if (timeStamp == null || zipCode ==-1 || partialVax ==-1 || fullVax ==-1 ) {
+					continue;}
 				
 				int testsConducted = negResults + posResults;
 				
 				String[] dateArray = dateFormat.format(timeStamp).split(" ");
 				String date = dateArray[0];
 				
-				Covid19Data covidData = new Covid19Data(zipCode,timeStamp, partialVax, fullVax, negResults, posResults, testsConducted,deaths, hospitalizations,boosters );
-				// add to map
+				//debug checking that it reads it right
+				//System.out.println("For " + date + " and zip code " + zipCode + " the full vax is " + fullVax + " partial vax " + partialVax);
+				
+				Covid19Data covidData = new Covid19Data(zipCode,timeStamp, partialVax, partialVax, negResults, posResults, testsConducted,deaths, hospitalizations,boosters );
+				VaccinationData vaccinationData = new VaccinationData(zipCode, partialVax, fullVax);
+				
+				
+				// add to covid map and covid vax map
 				covidMap.put(date, covidData);
-				// adding the number of partial and full vax for each date
-				if (!vaccinationMap.containsKey(date)) {
-					vaccinationMap.put(date, new int[2]); // the array contains the partial and full vax
+				
+				if (!covidVaxMap.containsKey(vaccinationData)) {
+					covidVaxMap.put(date, new HashMap<>());
 				}
 				
-				// assigning and adding values for each portion of the map's array for each date
-				int [] vaccinationTotals = vaccinationMap.get(date);
-				vaccinationTotals[0] += partialVax; 
-				vaccinationTotals[1] += fullVax;
-				}
+				// adding elements to nested map
+				covidVaxMap.get(date).put(zipCode, vaccinationData);
+				//debug checking that it adds to the map correctly
+				//System.out.println("Adding data to covid vax map for " + date + " and zip code " + zipCode + " vaccination data " + vaccinationData.toString()); 
+		
+				// Logging the covid event
+	            logger.logEvent("Reading the covid data file - " + filename);
+			}
 			
-				// Logging the covid
-	            logger.logEvent(filename);
+			
 			} catch (FileNotFoundException e) {
 	            // Log file not found error
 	            logger.logEvent("Error: Covid data isn't found - " + filename);
@@ -91,7 +102,7 @@ public class CSVCovidData extends FileSuperLogger{
 	            e.printStackTrace();
 	        } catch (NumberFormatException e) {
 	            // Log parsing errors
-	            logger.logEvent("Error: Parsing covid data file - " + filename);
+	            logger.logEvent("Error: Parsing covid data file! - " + filename);
 	            e.printStackTrace();
 	        }
 	    }
@@ -101,44 +112,42 @@ public class CSVCovidData extends FileSuperLogger{
 	 * @param dataToParse
 	 * @return
 	 */
-	private int parseInteger(String dataToParse) {
+	private int parseInteger(String dataToParse){
 		
 		// if the value is not empty or null, return the integer parsed
 		if (dataToParse != null && !dataToParse.isEmpty()) {
 			try {
 				return Integer.parseInt(dataToParse);
+				
 			} catch (NumberFormatException e) {
 				// Log parsing errors
 	            logger.logEvent("Error: Parsing covid data file - " + filename);
 	            e.printStackTrace();
-			}
-			
-			// otherwise return -1
-		} return -1;
+			}	
+		}//otherwise return -1 
+		return -1;
 	}
 	
 	/**
 	 * helper method to parse Dates and avoid null or empty strings
 	 * @param dataToParse
 	 * @return
+	 * @throws ParseException 
 	 */
-	private Date parseDate(String dataToParse) {
+	private Date parseDate(String dataToParse) throws ParseException {
 		// if the value is not empty or null, return the integer parsed
 			if (dataToParse != null && !dataToParse.isEmpty()) {
 				
 				// cleaning up the data by removing quotes mark at beginning and end of date field
 				// using regex to replace these quotes with empty space to avoid parsing errors
 				dataToParse = dataToParse.replaceAll("^\"|\"$", "");
+				String dataToParse2 = dataToParse;
+				//dataToParse2 = dataToParse2.replaceAll("MM/dd/yyyy HH:mm:ss", "yyyy-MM-dd HH:mm:00");
+		       //impleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+		        return dateFormat.parse(dataToParse2);
+		    }
 		
-				try {
-					return dateFormat.parse(dataToParse);
-					
-				} catch (ParseException e) {
-					// Log parsing errors
-		            logger.logEvent("Error: Parsing covid data file - " + filename);
-		            e.printStackTrace();
-				}
-			} // otherwise, return null
+			 // otherwise, return null
 			return null;
 	}
 	
@@ -156,36 +165,62 @@ public class CSVCovidData extends FileSuperLogger{
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             //setting a lenient parser to false since when parsing dates, the parser can be lenient
             //setting object to false so the parser strictly follows the format
-            dateFormat.setLenient(false);
+            //dateFormat.setLenient(false);
             //parsing string to the object, Date
             Date dateAsDate = dateFormat.parse(date);
             //formatting the date back to a string
             String dateStr = dateFormat.format(dateAsDate);
+       
+            //creating covid vaccination map
+            Map <Integer, VaccinationData> vaccinationMap = covidVaxMap.get(dateStr);
          
-            //creating covid19data object
-            Covid19Data covidData = covidMap.get(dateStr);
+
             //if the date is out of range, there will be no data
-            if (covidData == null) {
-                System.out.println("No covid data available: " + dateStr);
+            if (vaccinationMap == null ||  vaccinationMap.isEmpty() ) {
+                System.out.println("No vaccination data available for the following date: " + dateStr);
                 return 0;
             }
+            
+            for (VaccinationData vaccinationData: vaccinationMap.values()) {
             //utilizing switch strategy to handle different vaccinations
             switch (vaxType.toLowerCase()) {
                 case "full":
                 	//return the number of the  fully vaccinated 
-                    return covidData.getFullyVaccinated();
+                    return vaccinationData.getFullVaccinations();
                 case "partial":
                 	//returning the number of the partially vaccinated
-                    return covidData.getPartiallyVaccinated();
+                    return vaccinationData.getPartialVaccinations();
                     //returning 0 if vaccine doesn't exist
                 default:
-                    System.out.println("The vaccine does not exist: " + vaxType);
+                    System.out.println("The vaccine type does not exist: " + vaxType);
                     return 0;
+            	}
             }
+            
+            // if nothing matches,
+            System.out.println("No vaccination data available: " + dateStr);
+            return 0;
+            
         } catch (ParseException e) {
         	//logging error if data cant be parsed and returning 0
             System.out.println("Invalid date format provided: " + date);
             return 0; 
         }
     }
+	
+	
+	
+	
+	//free-form
+	public Map<String, Double> calculatePositivityRates() {
+		 Map<String, Double> positivityRates = new HashMap<>();
+		 for (String date : covidMap.keySet()) {
+		        Covid19Data covidData = covidMap.get(date);
+		        int positiveCases = covidData.getPosResults();
+		        int totalTests = covidData.getNegResults() + positiveCases;
+		        double positivityRate = (double) positiveCases / totalTests;
+		        positivityRates.put(date, positivityRate);
+		    }
+		    return positivityRates;
+		}
 }
