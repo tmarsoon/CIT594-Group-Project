@@ -14,6 +14,7 @@ import org.json.simple.parser.ParseException;
 
 
 import edu.upenn.cit594.data.Covid19Data;
+import edu.upenn.cit594.data.VaccinationData;
 import edu.upenn.cit594.logging.Logger;
 
 	public class JSONCovidData extends FileSuperLogger {
@@ -21,10 +22,12 @@ import edu.upenn.cit594.logging.Logger;
 	    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	    private Map<String, Covid19Data> covidMap;
+	    private Map <String, Map <Integer, VaccinationData>> covidVaxMap;
 
 	    public JSONCovidData(String filename, Logger logger) {
 	        super(filename, logger);
 	        this.covidMap = new HashMap<>();
+	        this.covidVaxMap = new HashMap<>();
 	    }
 	    //org.json.simple.parser.ParseException and java.text.ParseException causes a naming conflict
 	    //both must be used to throw for the jsonArray parser and the dateFormat variable
@@ -56,9 +59,28 @@ import edu.upenn.cit594.logging.Logger;
 	                Date timeStamp = getDateFromObj(jsonObj, "etl_timestamp");
 	                String date = dateFormat.format(timeStamp);
 
+	              //debug checking that it reads it right
+					//System.out.println("For " + date + " and zip code " + zipCode + " the full vax is " + fullVax + " partial vax " + partialVax);
+					
+	                
 	                Covid19Data jsonCovidData = new Covid19Data(zipCode, timeStamp, partialVax, fullVax, negResults,
 	                        posResults, testsConducted, deaths, hospitalizations, boosters);
+	                
+	                VaccinationData vaccinationData = new VaccinationData(zipCode, partialVax, fullVax);
+					
+					
+					// add to covid map and covid vax map
 	                covidMap.put(date, jsonCovidData);
+					
+					if (!covidVaxMap.containsKey(vaccinationData)) {
+						covidVaxMap.put(date, new HashMap<>());
+					}
+					
+					// adding elements to nested map
+					covidVaxMap.get(date).put(zipCode, vaccinationData);
+					//debug checking that it adds to the map correctly
+					//System.out.println("Adding data to covid vax map for " + date + " and zip code " + zipCode + " vaccination data " + vaccinationData.toString()); 
+
 	                
 	            }
 	         // Logging the covid event
